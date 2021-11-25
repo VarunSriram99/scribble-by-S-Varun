@@ -1,3 +1,3 @@
 export const initializeLogger = () => {
-    require("js-logger").useDefaults();
-  };
+  require("js-logger").useDefaults();
+};
