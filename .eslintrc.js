@@ -91,8 +91,6 @@ module.exports = {
     ],
     // auto-fixable: If a variable is never reassigned, using the const declaration is better.
     "prefer-const": "error",
-    // auto-fixable: It is considered good practice to use the type-safe equality operators === and !==.
-    eqeqeq: "error",
     // not-auto-fixable: Rule flags optional chaining expressions in positions where short-circuiting to undefined causes throwing a TypeError afterward.
     "no-unsafe-optional-chaining": "error",
     // auto-fixable: Remove all unused imports.

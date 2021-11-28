@@ -12,10 +12,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_25_094415) do
+ActiveRecord::Schema.define(version: 2021_11_25_184517) do
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "order", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_categories_on_name", unique: true
+  end
 
   create_table "site_settings", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "name", default: "Spinkart", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

@@ -1,27 +1,39 @@
 import React, { useState, useEffect } from "react";
 
 import { PageLoader } from "neetoui";
+import { Route, Switch, BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { setAuthHeaders } from "apis/axios";
 import { initializeLogger } from "common/logger";
 
+import Dashboard from "./Dashboard";
+import Public from "./Public";
+
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     initializeLogger();
-    setAuthHeaders(setLoading);
+    setIsLoading(false);
   }, []);
 
-  if (loading) {
-    return <h1>Loading...</h1>;
+  if (isLoading) {
+    return (
+      <h1>
+        <PageLoader />
+      </h1>
+    );
   }
 
   return (
-    <div className="text-red-600">
-      Hello world
-      <PageLoader />
-    </div>
+    <BrowserRouter>
+      <ToastContainer />
+      <Switch>
+        <Route exact path="/public" component={Public} />
+        <Route path="/" component={Dashboard} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 
