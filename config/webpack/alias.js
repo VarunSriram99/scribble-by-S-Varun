@@ -4,7 +4,8 @@ module.exports = {
         apis: "src/apis",
         common: "src/common",
         components: "src/components",
-        neetoui: "@bigbinary/neetoui"
+        neetoui: "@bigbinary/neetoui",
+        neetoicons: "@bigbinary/neeto-icons"
       }
     }
   };
