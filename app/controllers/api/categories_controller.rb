@@ -37,6 +37,9 @@ module Api
 
       def load_category
         @category = Category.find(params[:id])
+        unless @category
+          render status: :not_found, json: { error: t("not_found", entity: "Category") }
+        end
       end
   end
 end
