@@ -2,7 +2,7 @@
 
 module Api
   class CategoriesController < ApplicationController
-    before_action :load_category, only: %i[update]
+    before_action :load_category, only: %i[update destroy]
     skip_before_action :verify_authenticity_token
 
     def index
@@ -23,6 +23,15 @@ module Api
     def update
       if @category.update!(category_params)
         render status: :ok, json: { notice: t("successfully_updated", entity: "Category") }
+      else
+        error = category.errors.full_messages.to_sentence
+        render status: :unprocessable_entity, json: { error: error }
+      end
+    end
+
+    def destroy
+      if @category.destroy
+        render status: :ok, json: { notice: t("successfully_destroyed", entity: "Category") }
       else
         error = category.errors.full_messages.to_sentence
         render status: :unprocessable_entity, json: { error: error }

@@ -1,14 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import classnames from "classnames";
 import Logger from "js-logger";
-import { Plus, Search, Check } from "neetoicons";
+import { Plus, Search, Check, Close } from "neetoicons";
 import { Typography, Input, Button, Toastr } from "neetoui/v2";
 import { MenuBar } from "neetoui/v2/layouts";
 
 import categoriesApi from "apis/categories";
 
-function SideBar() {
+function SideBar({
+  currentCategory,
+  setCurrentCategory,
+  currentStatus,
+  setCurrentStatus,
+  articleData,
+}) {
+  const [isTextBoxCollapsed, setIsTextBoxCollapsed] = useState(true);
+  const [isSearchBoxCollapsed, setIsSearchBoxCollapsed] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [categorySearch, setCategorySearch] = useState("");
+  const [error, setError] = useState("");
+  const newCategory = useRef();
+
+  const publishedStatuses = ["All", "Draft", "Published"];
   const fetchCategories = async () => {
     const { data } = await categoriesApi.fetchCategories();
     //To sort the categories based on order
@@ -22,7 +35,6 @@ function SideBar() {
       })
     );
   };
-
   //Validation for addNewCategory
   const validateAddNewCategory = () => {
     const currentValue = newCategory.current.value.trim();
@@ -48,26 +60,58 @@ function SideBar() {
     }
   };
 
+  const handleCategoryChange = clickedCategory => {
+    clickedCategory === currentCategory
+      ? setCurrentCategory("")
+      : setCurrentCategory(clickedCategory);
+  };
+
+  const countPublishedStatus = status =>
+    status === "All"
+      ? articleData.length
+      : articleData.filter(article => article.status === status).length;
+  const countCategory = category =>
+    articleData.filter(article => article.category === category).length;
+
+  const toggleSearch = () => {
+    setIsSearchBoxCollapsed(!isSearchBoxCollapsed);
+    !isTextBoxCollapsed && setIsTextBoxCollapsed(true);
+    !isSearchBoxCollapsed && setCategorySearch("");
+  };
+
+  const toggleAddCategory = () => {
+    setIsTextBoxCollapsed(!isTextBoxCollapsed);
+    !isSearchBoxCollapsed && setIsSearchBoxCollapsed(true);
+  };
+
   useEffect(() => {
     fetchCategories();
   }, []);
-  const [isTextBoxCollapsed, setIsTextBoxCollapsed] = useState(true);
-  const [categories, setCategories] = useState([]);
-  const [error, setError] = useState("");
-  const newCategory = useRef();
+
   return (
     <MenuBar title="Articles" showMenu>
-      <MenuBar.Block label="All" count={13} active />
-      <MenuBar.Block label="Draft" count={2} />
-      <MenuBar.Block label="Published" count={7} />
+      {publishedStatuses.map((status, key) => (
+        <MenuBar.Block
+          key={key}
+          label={status}
+          count={countPublishedStatus(status)}
+          active={status === currentStatus}
+          onClick={() => setCurrentStatus(status)}
+        />
+      ))}
       <MenuBar.SubTitle
         iconProps={[
           {
-            icon: Search,
+            icon: isSearchBoxCollapsed ? Search : Close,
+            onClick: () => {
+              toggleSearch();
+            },
           },
           {
-            icon: Plus,
-            onClick: () => setIsTextBoxCollapsed(!isTextBoxCollapsed),
+            icon: isTextBoxCollapsed ? Plus : Close,
+            onClick: () => {
+              toggleAddCategory();
+            },
           },
         ]}
       >
@@ -75,19 +119,40 @@ function SideBar() {
           Categories
         </Typography>
       </MenuBar.SubTitle>
-      <div className={classnames({ hidden: isTextBoxCollapsed })}>
+      {!isTextBoxCollapsed && (
         <Input
           error={error}
           ref={newCategory}
+          placeholder="Add new category"
           onChange={() => validateAddNewCategory()}
           suffix={
             <Button style="icon" icon={Check} onClick={() => addCategory()} />
           }
         />
-      </div>
-      {categories.map((category, key) => (
-        <MenuBar.Block key={key} label={category.name} count={80} />
-      ))}
+      )}
+      {!isSearchBoxCollapsed && (
+        <Input
+          prefix={<Search />}
+          placeholder="Search for a category"
+          value={categorySearch}
+          onChange={e => {
+            setCategorySearch(e.target.value);
+          }}
+        />
+      )}
+      {categories
+        .filter(category =>
+          category.name.toLowerCase().includes(categorySearch.toLowerCase())
+        )
+        .map((category, key) => (
+          <MenuBar.Block
+            key={key}
+            active={category.name === currentCategory}
+            label={category.name}
+            count={countCategory(category.name)}
+            onClick={() => handleCategoryChange(category.name)}
+          />
+        ))}
     </MenuBar>
   );
 }
