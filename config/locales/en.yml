@@ -1,4 +1,5 @@
 en:
   successfully_created: "%{entity} was created successfully!"
   successfully_updated: "%{entity} was updated successfully!"
+  successfully_destroyed: "%{entity} was destroyed successfully!"
   not_found: "%{entity} was not found!"

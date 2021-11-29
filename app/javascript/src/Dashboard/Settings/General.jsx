@@ -66,7 +66,7 @@ function General() {
             onChange={e => setHasPassword(e.target.checked)}
           />
           <div className={classNames({ hidden: !hasPassword })}>
-            <Input label="Password" name="password" />
+            <Input label="Password" name="password" type="password" />
             <span className="flex items-center space-x-2">
               {passwordErrors.includes("length") ? (
                 <Close size={15} className="text-red-600 font-bold" />
