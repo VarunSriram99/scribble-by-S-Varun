@@ -6,7 +6,12 @@ import { Input, Dropdown, Typography } from "neetoui/v2";
 
 const columns = ["Title", "Date", "Author", "Category", "Status"];
 
-function Subheader({ selectedColumns, setSelectedColumns }) {
+function Subheader({
+  selectedColumns,
+  setSelectedColumns,
+  articleSearch,
+  setArticleSearch,
+}) {
   const handleColumnChange = event => {
     //Only unchecked columns are added into the selectedColumns array state to set them as hidden in react table
     const changeSelectedColumns = selectedColumns;
@@ -23,7 +28,12 @@ function Subheader({ selectedColumns, setSelectedColumns }) {
   return (
     <div className="flex justify-end space-x-2 items-center m-4">
       <div className="w-1/3">
-        <Input placeholder="Search article title" prefix={<Search />} />
+        <Input
+          placeholder="Search article title"
+          prefix={<Search />}
+          value={articleSearch}
+          onChange={e => setArticleSearch(e.target.value)}
+        />
       </div>
       <Dropdown
         buttonStyle="secondary"
