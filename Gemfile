@@ -58,3 +58,6 @@ gem "react-rails"
 
 # Postgres for production DB
 gem "pg", group: [:production]
+
+# For authentication
+gem "bcrypt", "~> 3.1.13"

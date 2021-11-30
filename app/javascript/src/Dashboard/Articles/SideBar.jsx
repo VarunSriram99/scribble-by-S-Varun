@@ -38,16 +38,21 @@ function SideBar({
   //Validation for addNewCategory
   const validateAddNewCategory = () => {
     const currentValue = newCategory.current.value.trim();
-    if (currentValue.length === 0) setError("Category shouldn't be empty.");
-    else if (categories.find(category => category.name == currentValue)) {
+    if (currentValue.length === 0) {
+      setError("Category shouldn't be empty.");
+      return false;
+    } else if (categories.find(category => category.name == currentValue)) {
       setError("Category should be unique.");
-    } else setError("");
+      return false;
+    }
+    setError("");
+    return true;
   };
 
   const addCategory = async () => {
     const currentValue = newCategory.current.value.trim();
-    validateAddNewCategory();
-    if (error.length === 0) {
+    const isValid = validateAddNewCategory();
+    if (isValid) {
       try {
         await categoriesApi.create({ category: { name: currentValue } });
         Toastr.success("Successfully added category");
@@ -128,6 +133,7 @@ function SideBar({
           suffix={
             <Button style="icon" icon={Check} onClick={() => addCategory()} />
           }
+          className="my-2"
         />
       )}
       {!isSearchBoxCollapsed && (
@@ -138,6 +144,7 @@ function SideBar({
           onChange={e => {
             setCategorySearch(e.target.value);
           }}
+          className="my-2"
         />
       )}
       {categories

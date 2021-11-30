@@ -3,3 +3,7 @@ en:
   successfully_updated: "%{entity} was updated successfully!"
   successfully_destroyed: "%{entity} was destroyed successfully!"
   not_found: "%{entity} was not found!"
+  redirection:
+    same_from_to: "To URL can't be same as from URL"
+    from_and_tos_form_loop: "A previous From and To URL forms a loop. This will cause an infinite loop!"
+    url_cannot_have_spaces: "URL cannot have whitespaces"

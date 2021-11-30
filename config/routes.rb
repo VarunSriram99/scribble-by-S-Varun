@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :categories, only: %i[index create update destroy]
+    resources :redirections, only: %i[index create update destroy]
+    resources :site_settings, only: %i[update index]
   end
 
   get "*path", to: "home#index", via: :all

@@ -1,23 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import classNames from "classnames";
 import { Formik, Form } from "formik";
 import Logger from "js-logger";
 import { Check, Close } from "neetoicons";
 import { Checkbox, Button } from "neetoui";
-import { Typography } from "neetoui/v2";
+import { Typography, Toastr } from "neetoui/v2";
 import { Input } from "neetoui/v2/formik";
 import * as yup from "yup";
+
+import sitesettingsApi from "apis/sitesettings";
 
 function General() {
   const [hasPassword, setHasPassword] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState(["length", "character"]);
+  const [siteName, setSiteName] = useState("");
   const initialValues = hasPassword ? { name: "", password: "" } : { name: "" };
-  const handleSubmit = values => {
-    hasPassword ? Logger.log(values) : Logger.log({ name: values.name });
+  const handleSubmit = async values => {
+    try {
+      hasPassword
+        ? await sitesettingsApi.update({ site_settings: values })
+        : await sitesettingsApi.update({
+            site_settings: { name: values.name, password: "" },
+          });
+      Toastr.success("Successfully updated general settings");
+    } catch (error) {
+      Logger.log(error);
+      Toastr.error(Error("Couldn't update general settings"));
+    }
   };
   const validationSchema = {
     name: yup.string().trim().required("Site name is required"),
+  };
+  const fetchSiteName = async () => {
+    try {
+      const { data } = await sitesettingsApi.fetchSiteSettings();
+      setSiteName(data.site_name);
+    } catch (error) {
+      Toastr.error("Couldn't fetch sitename");
+      Logger.log(error);
+    }
   };
   const validate = ({ password }) => {
     if (hasPassword) {
@@ -34,6 +56,10 @@ function General() {
 
     return {}; // Return empty object to let formik know that there are no errors
   };
+
+  useEffect(() => {
+    fetchSiteName();
+  }, []);
   return (
     <Formik
       initialValues={initialValues}
@@ -52,7 +78,7 @@ function General() {
           <Input
             label="Site Name"
             className="my-4"
-            placeholder="Spinkart"
+            placeholder={siteName}
             name="name"
           />
           <Typography style="body3" className="text-gray-400 border-b pb-4">
