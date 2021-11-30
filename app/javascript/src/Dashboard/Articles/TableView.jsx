@@ -14,11 +14,39 @@ function TableView({
   const handleEdit = () => {};
   const handleDelete = () => {};
   const [data, setData] = useState([]);
+  const formatDate = date => {
+    const formattedDate = new Date(date).toLocaleString("en-us", {
+      month: "long",
+      year: "numeric",
+      day: "numeric",
+    });
+    const splitDate = formattedDate.split(" ");
+    const day = parseInt(splitDate[1].slice(0, -1));
+    let daySuffix = "th";
+    if (day <= 3 || day >= 21) {
+      switch (day % 10) {
+        case 1:
+          daySuffix = "st";
+          break;
+        case 2:
+          daySuffix = "nd";
+          break;
+        case 3:
+          daySuffix = "rd";
+          break;
+        default:
+          daySuffix = "th";
+      }
+    }
+    splitDate[1] = `${splitDate[1].slice(0, -1)}${daySuffix},`;
+    return splitDate.join(" ");
+  };
   const columns = useMemo(
     () => [
       {
         Header: "TITLE",
         accessor: "title",
+        className: "w-1/4",
         Cell: ({ value }) => (
           <div className="text-indigo-500 font-semibold">{value}</div>
         ),
@@ -26,19 +54,23 @@ function TableView({
       {
         Header: "DATE",
         accessor: "date",
-        Cell: ({ value }) => new Date(value).toDateString(),
+        className: "w-2/12",
+        Cell: ({ value }) => formatDate(value),
       },
       {
         Header: "AUTHOR",
         accessor: "author",
+        Cell: ({ value }) => <div className="text-gray-500">{value}</div>,
       },
       {
         Header: "CATEGORY",
         accessor: "category",
+        Cell: ({ value }) => <div className="text-gray-500">{value}</div>,
       },
       {
         Header: "STATUS",
         accessor: "status",
+        Cell: ({ value }) => <div className="text-gray-500">{value}</div>,
       },
       {
         accessor: "id",
@@ -97,13 +129,19 @@ function TableView({
       <Typography style="h4" className="m-6">
         {data.length} Articles
       </Typography>
-      <table {...getTableProps()} className="w-full h-10 my-4 p-10">
+      <table {...getTableProps()} className="w-full h-10 m-4 p-10">
         <thead>
           {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()} className="pb-2">
+            <tr
+              {...headerGroup.getHeaderGroupProps()}
+              className="pb-2 text-left"
+            >
               {headerGroup.headers.map(column => {
                 return (
-                  <th {...column.getHeaderProps()} className="text-gray-400">
+                  <th
+                    {...column.getHeaderProps()}
+                    className={`text-gray-400 ${column.className}`}
+                  >
                     {column.render("Header")}
                   </th>
                 );
@@ -118,7 +156,7 @@ function TableView({
               <tr {...row.getRowProps()} className="even:bg-gray-100 h-12">
                 {row.cells.map(cell => {
                   return (
-                    <td {...cell.getCellProps()} className="text-center">
+                    <td {...cell.getCellProps()} className="text-left">
                       {cell.render("Cell")}
                     </td>
                   );

@@ -15,7 +15,7 @@ function Articles() {
     const seedData = [
       {
         title: "hello",
-        date: "11-27-21",
+        date: "11-2-21",
         author: "someone",
         category: "General",
         status: "Published",

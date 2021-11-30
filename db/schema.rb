@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_25_184517) do
+ActiveRecord::Schema.define(version: 2021_11_30_165108) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
@@ -22,10 +22,19 @@ ActiveRecord::Schema.define(version: 2021_11_25_184517) do
     t.index ["name"], name: "index_categories_on_name", unique: true
   end
 
+  create_table "redirections", force: :cascade do |t|
+    t.string "from", null: false
+    t.string "to", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["from"], name: "index_redirections_on_from", unique: true
+  end
+
   create_table "site_settings", force: :cascade do |t|
     t.string "name", default: "Spinkart", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "password_digest"
   end
 
 end
