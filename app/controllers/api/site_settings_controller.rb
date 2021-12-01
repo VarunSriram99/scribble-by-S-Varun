@@ -14,7 +14,7 @@ module Api
       if site_setting.update!(site_settings_params)
         render status: :ok, json: { notice: t("successfully_updated", entity: "Site Settings") }
       else
-        error = @site_setting.errors.full_messages.to_sentence
+        error = site_setting.errors.full_messages.to_sentence
         render status: :unprocessable_entity, json: { error: error }
       end
     end
