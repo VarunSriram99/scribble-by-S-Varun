@@ -1,16 +1,16 @@
-# frozen_string_literal: true
+  # frozen_string_literal: true
 
-module Api
-  class SiteSettingsController < ApplicationController
+  class Api::SiteSettingsController < ApplicationController
     skip_before_action :verify_authenticity_token
 
     def index
-      site_setting = SiteSetting.first.name
+      site_setting = SiteSetting.first_or_create!(name: "Spinkart").name
       render status: :ok, json: { "site_name": site_setting }
     end
 
     def update
-      site_setting = SiteSetting.first
+      # Using first or create here instead of first so that a new record is created if table is empty
+      site_setting = SiteSetting.first_or_create!(name: "Spinkart")
       if site_setting.update!(site_settings_params)
         render status: :ok, json: { notice: t("successfully_updated", entity: "Site Settings") }
       else
@@ -25,4 +25,3 @@ module Api
         params.require(:site_settings).permit(:name, :password)
       end
   end
-end

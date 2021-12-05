@@ -8,7 +8,7 @@ import categoriesApi from "apis/categories";
 
 import DeleteCategory from "./DeleteCategory";
 
-function Categories() {
+function Categories({ categoriesData, fetchCategories }) {
   const [categories, setCategories] = useState([]);
   const [currentlyDraggedCategory, setCurrentlyDraggedCategory] = useState(-1);
   const [isAddNewCategoryOpen, setIsAddNewCategoryOpen] = useState(false);
@@ -20,40 +20,30 @@ function Categories() {
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const newCategoryReference = useRef();
 
-  const fetchCategories = async () => {
-    const { data } = await categoriesApi.fetchCategories();
-    //To sort the categories based on order
-    setCategories(
-      data.Categories.sort((a, b) => {
-        if (a.order < b.order) return -1;
-
-        if (a.order > b.order) return 1;
-
-        return 0;
-      })
-    );
-  };
-
   const onDragStart = event => {
     setCurrentlyDraggedCategory(event.target.id);
   };
-
+  const categoriesOrder = [...categories];
   const onDrop = async event => {
     try {
       //draggedCategory is the category which is currently being dragged
-      const draggedCategory = categories.find(
+      const draggedCategory = categories.findIndex(
         category => category.order == currentlyDraggedCategory
       );
       //droppedOverCategory is the category item over which the dragged category is dropped
-      const droppedOverCategory = categories.find(
+      const droppedOverCategory = categories.findIndex(
         category => category.order == event.currentTarget.id
       );
-      await categoriesApi.update(draggedCategory.id, {
-        category: { order: droppedOverCategory.order },
+      // If dragged category dropped over itself, no need to reorder.
+      if (draggedCategory === droppedOverCategory) return;
+
+      // Reordering the element in the array
+      const removedElement = categoriesOrder.splice(draggedCategory, 1);
+      categoriesOrder.splice(droppedOverCategory, 0, ...removedElement);
+      const temp = categoriesOrder.map((categoryOrder, index) => {
+        return { id: categoryOrder.id, order: index + 1 };
       });
-      await categoriesApi.update(droppedOverCategory.id, {
-        category: { order: draggedCategory.order },
-      });
+      await categoriesApi.reorder({ category: { reorder: temp } });
       fetchCategories();
       Toastr.success("Successfully reordered!");
     } catch (error) {
@@ -130,8 +120,8 @@ function Categories() {
   };
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    setCategories(categoriesData);
+  }, [categoriesData]);
 
   useEffect(() => {
     validateEditCategory();
@@ -168,7 +158,7 @@ function Categories() {
           onClick={() => setIsAddNewCategoryOpen(true)}
         />
       )}
-      {categories.map(category =>
+      {categories?.map(category =>
         currentlyEditedCategory === category.id ? (
           <div
             key={category.id}
