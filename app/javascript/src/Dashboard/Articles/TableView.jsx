@@ -10,37 +10,14 @@ function TableView({
   currentCategory,
   currentStatus,
   articleSearch,
+  setCurrentlyDeletedArticle,
+  setIsDeleteAlertOpen,
 }) {
-  const handleEdit = () => {};
-  const handleDelete = () => {};
-  const [data, setData] = useState([]);
-  const formatDate = date => {
-    const formattedDate = new Date(date).toLocaleString("en-us", {
-      month: "long",
-      year: "numeric",
-      day: "numeric",
-    });
-    const splitDate = formattedDate.split(" ");
-    const day = parseInt(splitDate[1].slice(0, -1));
-    let daySuffix = "th";
-    if (day <= 3 || day >= 21) {
-      switch (day % 10) {
-        case 1:
-          daySuffix = "st";
-          break;
-        case 2:
-          daySuffix = "nd";
-          break;
-        case 3:
-          daySuffix = "rd";
-          break;
-        default:
-          daySuffix = "th";
-      }
-    }
-    splitDate[1] = `${splitDate[1].slice(0, -1)}${daySuffix},`;
-    return splitDate.join(" ");
+  const handleDelete = id => {
+    setCurrentlyDeletedArticle(id);
+    setIsDeleteAlertOpen(true);
   };
+  const [data, setData] = useState([]);
   const columns = useMemo(
     () => [
       {
@@ -55,7 +32,6 @@ function TableView({
         Header: "DATE",
         accessor: "date",
         className: "w-2/12",
-        Cell: ({ value }) => formatDate(value),
       },
       {
         Header: "AUTHOR",
@@ -81,13 +57,13 @@ function TableView({
                 icon={Edit}
                 style="icon"
                 iconPosition="left"
-                onClick={e => handleEdit(value, e)}
+                href={`/articles/edit/${value.row.original.id}`}
               />
               <Button
                 icon={Delete}
                 style="icon"
                 iconPosition="left"
-                onClick={e => handleDelete(value.value, e)}
+                onClick={() => handleDelete(value.row.original.id)}
               />
             </div>
           );

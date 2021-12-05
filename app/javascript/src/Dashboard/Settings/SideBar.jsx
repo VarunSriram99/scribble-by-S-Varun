@@ -11,7 +11,7 @@ function SideBar({ currentSetting, setCurrentSetting }) {
   const settingStyle =
     "flex items-center space-x-2 p-4 rounded-sm pointer-events-none delay-150";
   return (
-    <div className="border-r w-3/12 h-screen">
+    <div className="border-r w-4/12 h-screen">
       <div
         id="general"
         onClick={e => changeSetting(e)}
@@ -45,7 +45,7 @@ function SideBar({ currentSetting, setCurrentSetting }) {
           <div>
             Redirections
             <div className="text-xs font-normal">
-              Page Title, Brand Name & Meta Description
+              Create & configure redirection rules
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ function SideBar({ currentSetting, setCurrentSetting }) {
           <div>
             Manage Categories
             <div className="text-xs font-normal">
-              Page Title, Brand Name & Meta Description
+              Edit and Reorder KB Structure
             </div>
           </div>
         </div>

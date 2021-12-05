@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+import articlesApi from "apis/articles";
+
+import DeleteArticle from "./DeleteArticle";
 import SideBar from "./SideBar";
 import Subheader from "./Subheader";
 import TableView from "./TableView";
@@ -10,25 +13,16 @@ function Articles() {
   const [currentStatus, setCurrentStatus] = useState("All");
   const [articleData, setArticleData] = useState([]);
   const [articleSearch, setArticleSearch] = useState("");
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [currentlyDeletedArticle, setCurrentlyDeletedArticle] = useState(-1);
+
+  const fetchArticlesData = async () => {
+    const { data } = await articlesApi.fetchArticles();
+    setArticleData(data.articles);
+  };
 
   useEffect(() => {
-    const seedData = [
-      {
-        title: "hello",
-        date: "11-2-21",
-        author: "someone",
-        category: "General",
-        status: "Published",
-      },
-      {
-        title: "hello",
-        date: "11-27-21",
-        author: "someone",
-        category: "General",
-        status: "Published",
-      },
-    ];
-    setArticleData([...seedData]);
+    fetchArticlesData();
   }, []);
 
   return (
@@ -53,8 +47,16 @@ function Articles() {
           currentCategory={currentCategory}
           currentStatus={currentStatus}
           articleSearch={articleSearch}
+          setCurrentlyDeletedArticle={setCurrentlyDeletedArticle}
+          setIsDeleteAlertOpen={setIsDeleteAlertOpen}
         />
       </div>
+      <DeleteArticle
+        isDeleteAlertOpen={isDeleteAlertOpen}
+        setIsDeleteAlertOpen={setIsDeleteAlertOpen}
+        currentlyDeletedArticle={currentlyDeletedArticle}
+        fetchArticles={fetchArticlesData}
+      />
     </div>
   );
 }

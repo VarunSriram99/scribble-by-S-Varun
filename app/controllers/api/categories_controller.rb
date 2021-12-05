@@ -1,9 +1,9 @@
-# frozen_string_literal: true
+  # frozen_string_literal: true
 
-module Api
-  class CategoriesController < ApplicationController
+  class Api::CategoriesController < ApplicationController
     before_action :load_category, only: %i[update destroy]
     skip_before_action :verify_authenticity_token
+    include Formattable
 
     def index
       categories = Category.all
@@ -29,6 +29,16 @@ module Api
       end
     end
 
+    def reorder
+      ids, orders = format_reorder(category_params["reorder"])
+      if Category.update(ids, orders)
+        render status: :ok, json: { message: "success" }
+      else
+        error = category.errors.full_messages.to_sentence
+        render status: :unprocessable_entity, json: { error: error }
+      end
+    end
+
     def destroy
       if @category.destroy
         render status: :ok, json: { notice: t("successfully_destroyed", entity: "Category") }
@@ -41,7 +51,7 @@ module Api
     private
 
       def category_params
-        params.require(:category).permit(:name, :order)
+        params.require(:category).permit(:name, :order, reorder: [:id, :order])
       end
 
       def load_category
@@ -51,4 +61,3 @@ module Api
         end
       end
   end
-end

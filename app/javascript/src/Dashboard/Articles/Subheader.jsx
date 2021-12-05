@@ -66,6 +66,7 @@ function Subheader({
         }
         iconPosition="right"
         className="h-8"
+        href="/articles/new"
       />
     </div>
   );

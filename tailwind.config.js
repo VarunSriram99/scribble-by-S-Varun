@@ -8,7 +8,8 @@ module.exports = {
     extend: {},
   },
   variants: {
-    backgroundColor: ['even','odd',`hover`]
+    backgroundColor: ['even','odd',`hover`],
+    outline: ['focus']
   },
   plugins: [],
 }

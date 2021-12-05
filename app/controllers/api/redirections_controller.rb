@@ -1,7 +1,6 @@
-# frozen_string_literal: true
+  # frozen_string_literal: true
 
-module Api
-  class RedirectionsController < ApplicationController
+  class Api::RedirectionsController < ApplicationController
     skip_before_action :verify_authenticity_token
     before_action :load_redirection, only: %i[update destroy]
 
@@ -51,4 +50,3 @@ module Api
         end
       end
   end
-end
