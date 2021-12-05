@@ -8,6 +8,7 @@ class CreateArticles < ActiveRecord::Migration[6.1]
       t.string :slug, index: { unique: true }
       t.references :user, null: false, foreign_key: true
       t.references :category, foreign_key: true
+      t.datetime :published_date
 
       t.timestamps
     end
