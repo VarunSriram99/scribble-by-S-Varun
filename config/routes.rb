@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     resources :redirections, only: %i[index create update destroy]
     resources :site_settings, only: %i[create update index]
     resources :articles, only: %i[index create show update destroy]
+    resources :sessions, only: :create
+    resources :public, only: %i[index show], param: :slug
 
     post "categories/reorder", to: "categories#reorder"
   end

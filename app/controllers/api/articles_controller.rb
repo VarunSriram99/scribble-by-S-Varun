@@ -59,7 +59,7 @@ class Api::ArticlesController < ApplicationController
       if article_params[:publish]
         @article.create_slug
       else
-        @article.update!(slug: nil)
+        @article.update!(slug: nil, published_date: nil)
       end
     end
 end
