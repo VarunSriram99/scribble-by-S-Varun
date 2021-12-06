@@ -41,7 +41,7 @@ function Sidebar({ categoriesData }) {
               {category.name}
             </div>
             {expandedCategories.indexOf(key) !== -1 && (
-              <div className="text-xs ml-4 space-x-2 mt-4">
+              <div className="text-xs ml-4 mt-4 space-y-2">
                 {category.articles.map((article, categoryKey) => (
                   <li key={categoryKey}>
                     {article.slug && (
