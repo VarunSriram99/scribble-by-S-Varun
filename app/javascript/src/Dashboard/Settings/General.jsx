@@ -21,7 +21,7 @@ function General() {
       hasPassword
         ? await sitesettingsApi.update({ site_settings: values })
         : await sitesettingsApi.update({
-            site_settings: { name: values.name, password: "" },
+            site_settings: { name: values.name, password: null },
           });
       Toastr.success("Successfully updated general settings");
     } catch (error) {
@@ -36,6 +36,7 @@ function General() {
     try {
       const { data } = await sitesettingsApi.fetchSiteSettings();
       setSiteName(data.site_name);
+      setHasPassword(data.has_password);
     } catch (error) {
       Toastr.error("Couldn't fetch sitename");
       Logger.log(error);
@@ -89,6 +90,7 @@ function General() {
           <Checkbox
             label="Password Protect Knowledge Base"
             className="m-2"
+            checked={hasPassword}
             onChange={e => setHasPassword(e.target.checked)}
           />
           <div className={classNames({ hidden: !hasPassword })}>

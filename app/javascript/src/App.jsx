@@ -30,7 +30,7 @@ function App() {
     <BrowserRouter>
       <ToastContainer />
       <Switch>
-        <Route exact path="/public" component={Public} />
+        <Route path="/public" component={Public} />
         <Route path="/" component={Dashboard} />
       </Switch>
     </BrowserRouter>

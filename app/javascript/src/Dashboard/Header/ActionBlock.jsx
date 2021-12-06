@@ -10,6 +10,7 @@ function ActionBlock() {
       label="Preview"
       icon={ExternalLink}
       className="mx-4"
+      href="/public"
     />
   );
 }
