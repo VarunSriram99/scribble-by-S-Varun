@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
     check_auth_token_valid = ActiveSupport::SecurityUtils.secure_compare(
       site_setting.authentication_token, auth_token
     ) unless auth_token.nil?
-    puts(auth_token)
 
     unless auth_token && check_auth_token_valid
       render status: :unauthorized, json: { error: t("session.could_not_authenticate") }

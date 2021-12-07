@@ -15,8 +15,8 @@ class Api::ArticlesController < ApplicationController
 
   def create
     user = User.first
-    @article = Article.new(article_params.except(:publish).merge!(user_id: user.id))
-    if @article.save!
+    @article = Article.new(article_params.except(:publish).merge(user_id: user.id))
+    if @article.save
       render status: :ok, json: { notice: t("successfully_created", entity: "Article") }
     else
       error = @article.errors.full_messages.to_sentence
@@ -25,7 +25,7 @@ class Api::ArticlesController < ApplicationController
   end
 
   def update
-    if @article.update!(article_params.except(:publish))
+    if @article.update(article_params.except(:publish))
       render status: :ok, json: { notice: t("successfully_updated", entity: "Article") }
     else
       error = @article.errors.full_messages.to_sentence
@@ -59,7 +59,7 @@ class Api::ArticlesController < ApplicationController
       if article_params[:publish]
         @article.create_slug
       else
-        @article.update!(slug: nil, published_date: nil)
+        @article.update(slug: nil, published_date: nil)
       end
     end
 end

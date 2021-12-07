@@ -40,10 +40,15 @@ function Categories({ categoriesData, fetchCategories }) {
       // Reordering the element in the array
       const removedElement = categoriesOrder.splice(draggedCategory, 1);
       categoriesOrder.splice(droppedOverCategory, 0, ...removedElement);
-      const temp = categoriesOrder.map((categoryOrder, index) => {
-        return { id: categoryOrder.id, order: index + 1 };
+      const ids = [];
+      const orders = [];
+      categoriesOrder.map((categoryOrder, index) => {
+        ids.push(categoryOrder.id);
+        orders.push({ order: index + 1 });
       });
-      await categoriesApi.reorder({ category: { reorder: temp } });
+      await categoriesApi.reorder({
+        category: { reorder: { ids: ids, orders: orders } },
+      });
       fetchCategories();
       Toastr.success("Successfully reordered!");
     } catch (error) {

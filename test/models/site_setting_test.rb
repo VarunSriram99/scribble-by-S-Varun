@@ -3,7 +3,22 @@
 require "test_helper"
 
 class SiteSettingTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  def setup
+    @site_setting = build(:site_setting)
+  end
+
+  def test_valid_site_settings_should_be_accepted
+    assert @site_setting.save!
+  end
+
+  def test_name_should_not_be_blank
+    @site_setting.name = nil
+    assert_not @site_setting.valid?
+    assert_equal ["Name can't be blank"], @site_setting.errors.full_messages
+  end
+
+  def test_auth_token_should_be_present
+    @site_setting.save!
+    assert_not_nil @site_setting.authentication_token
+  end
 end

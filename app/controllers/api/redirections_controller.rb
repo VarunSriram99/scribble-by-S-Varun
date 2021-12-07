@@ -11,7 +11,7 @@
 
     def create
       redirection = Redirection.new(redirection_params)
-      if redirection.save!
+      if redirection.save
         render status: :ok, json: { notice: t("successfully_created", entity: "Redirection") }
       else
         error = redirection.errors.full_messages.to_sentence
@@ -20,7 +20,7 @@
     end
 
     def update
-      if @redirection.update!(redirection_params)
+      if @redirection.update(redirection_params)
         render status: :ok, json: { notice: t("successfully_updated", entity: "Redirection") }
       else
         error = @redirection.errors.full_messages.to_sentence
@@ -30,7 +30,7 @@
 
     def destroy
       if @redirection.destroy
-        render status: :ok, json: { notice: t("successfully_deleted", entity: "Redirection") }
+        render status: :ok, json: { notice: t("successfully_destroyed", entity: "Redirection") }
       else
         error = @redirection.errors.full_messages.to_sentence
         render status: :unprocessable_entity, json: { error: error }
