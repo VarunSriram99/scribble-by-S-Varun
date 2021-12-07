@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import Logger from "js-logger";
 import { Reorder, Edit, Delete, Check } from "neetoicons";
-import { Typography, Button, Toastr, Input } from "neetoui/v2";
+import { Typography, Button, Toastr, Input, PageLoader } from "neetoui/v2";
 
 import categoriesApi from "apis/categories";
 
@@ -18,6 +18,7 @@ function Categories({ categoriesData, fetchCategories }) {
   const [editCategoryValue, setEditCategoryValue] = useState("");
   const [editCategoryError, setEditCategoryError] = useState("");
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const newCategoryReference = useRef();
 
   const onDragStart = event => {
@@ -26,6 +27,7 @@ function Categories({ categoriesData, fetchCategories }) {
   const categoriesOrder = [...categories];
   const onDrop = async event => {
     try {
+      setIsLoading(true);
       //draggedCategory is the category which is currently being dragged
       const draggedCategory = categories.findIndex(
         category => category.order == currentlyDraggedCategory
@@ -50,7 +52,7 @@ function Categories({ categoriesData, fetchCategories }) {
         category: { reorder: { ids: ids, orders: orders } },
       });
       fetchCategories();
-      Toastr.success("Successfully reordered!");
+      setIsLoading(false);
     } catch (error) {
       Logger.log(error);
       Toastr.error(Error("Error in reordering!"));
@@ -125,12 +127,24 @@ function Categories({ categoriesData, fetchCategories }) {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     setCategories(categoriesData);
+    setIsLoading(false);
   }, [categoriesData]);
 
   useEffect(() => {
+    setIsLoading(true);
     validateEditCategory();
+    setIsLoading(false);
   }, [editCategoryValue]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-no-wrap w-full h-screen items-center">
+        <PageLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="text-left w-2/3">
