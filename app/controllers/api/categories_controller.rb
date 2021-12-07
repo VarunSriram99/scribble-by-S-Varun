@@ -3,7 +3,6 @@
   class Api::CategoriesController < ApplicationController
     before_action :load_category, only: %i[update destroy]
     skip_before_action :verify_authenticity_token
-    include Formattable
 
     def index
       categories = Category.all
@@ -12,7 +11,7 @@
 
     def create
       category = Category.new(category_params)
-      if category.save!
+      if category.save
         render status: :ok, json: { notice: t("successfully_created", entity: "Category") }
       else
         error = category.errors.full_messages.to_sentence
@@ -21,18 +20,18 @@
     end
 
     def update
-      if @category.update!(category_params)
+      if @category.update(category_params)
         render status: :ok, json: { notice: t("successfully_updated", entity: "Category") }
       else
-        error = category.errors.full_messages.to_sentence
+        error = @category.errors.full_messages.to_sentence
         render status: :unprocessable_entity, json: { error: error }
       end
     end
 
     def reorder
-      ids, orders = format_reorder(category_params["reorder"])
-      if Category.update(ids, orders)
-        render status: :ok, json: { message: "success" }
+      reorder = category_params["reorder"]
+      if Category.update(reorder[:ids], reorder[:orders])
+        render status: :ok, json: { notice: t("successfully_reordered") }
       else
         error = category.errors.full_messages.to_sentence
         render status: :unprocessable_entity, json: { error: error }
@@ -51,7 +50,7 @@
     private
 
       def category_params
-        params.require(:category).permit(:name, :order, reorder: [:id, :order])
+        params.require(:category).permit(:name, :order, { reorder: { ids: [], orders: [:order] } })
       end
 
       def load_category

@@ -5,14 +5,13 @@
 
     def index
       # Using first or create here instead of first so that a new record is created if table is empty
-      site_setting = SiteSetting.first_or_create!(name: "Spinkart")
+      site_setting = SiteSetting.first_or_create(name: "Spinkart")
       render status: :ok, json: { "site_name": site_setting.name, "has_password": !site_setting.password_digest.nil? }
     end
 
     def update
       # Using first or create here instead of first so that a new record is created if table is empty
-      site_setting = SiteSetting.first_or_create!(name: "Spinkart")
-      puts site_settings_params
+      site_setting = SiteSetting.first_or_create(name: "Spinkart")
       if site_setting.update(site_settings_params)
         render status: :ok, json: { notice: t("successfully_updated", entity: "Site Settings") }
       else

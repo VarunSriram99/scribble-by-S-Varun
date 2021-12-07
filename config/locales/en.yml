@@ -2,6 +2,7 @@ en:
   successfully_created: "%{entity} was created successfully!"
   successfully_updated: "%{entity} was updated successfully!"
   successfully_destroyed: "%{entity} was destroyed successfully!"
+  successfully_reordered: "Reordered successfully"
   not_found: "%{entity} was not found!"
   redirection:
     same_from_to: "To URL can't be same as from URL"

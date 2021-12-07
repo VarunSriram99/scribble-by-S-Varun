@@ -33,6 +33,10 @@ group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "rubocop"
   gem "rubocop-rails"
+  # Rails integration for factory_bot, a replacement for fixtures
+  gem "factory_bot_rails"
+  # For auto-generating demo data
+  gem "faker"
 end
 
 group :development do
@@ -61,3 +65,6 @@ gem "pg", group: [:production]
 
 # For authentication
 gem "bcrypt", "~> 3.1.13"
+
+# To check test coverage
+gem "simplecov", require: false, group: :test

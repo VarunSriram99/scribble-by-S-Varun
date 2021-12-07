@@ -29,7 +29,7 @@ class Redirection < ApplicationRecord
 
     def to_url_shouldnot_have_spaces
       unless to.index(" ").nil?
-        errors.add(:from, t("redirection.url_cannot_have_spaces"))
+        errors.add(:to, t("redirection.url_cannot_have_spaces"))
       end
     end
 end

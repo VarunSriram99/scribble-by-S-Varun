@@ -2,8 +2,9 @@
 
 class Category < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: false }
+  validates :order, presence: true
 
-  before_create :add_order_number
+  before_validation :add_order_number, on: :create
 
   has_many :articles, dependent: :nullify
 
