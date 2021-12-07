@@ -1,8 +1,10 @@
 import axios from "axios";
+import Cookie from "universal-cookie";
 
 axios.defaults.baseURL = "/";
 
 export const setAuthHeaders = (setLoading = () => null) => {
+  const cookies = new Cookie();
   axios.defaults.headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -10,7 +12,7 @@ export const setAuthHeaders = (setLoading = () => null) => {
       .querySelector('[name="csrf-token"]')
       .getAttribute("content"),
   };
-  const token = localStorage.getItem("authToken");
+  const token = cookies.get("authToken");
   if (token) axios.defaults.headers["X-Auth-Token"] = token;
   setLoading(false);
 };

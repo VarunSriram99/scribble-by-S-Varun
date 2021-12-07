@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Logger from "js-logger";
 import { Toastr } from "neetoui/v2";
 import { Redirect, Switch } from "react-router-dom";
+import Cookie from "universal-cookie";
 
 import { setAuthHeaders } from "apis/axios";
 import redirectionsApi from "apis/redirections";
@@ -20,6 +21,7 @@ function Public() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [redirections, setRedirections] = useState([]);
+  const cookies = new Cookie();
 
   const fetchSiteDetails = async () => {
     try {
@@ -28,7 +30,9 @@ function Public() {
       setSiteName(data.site_name);
       if (!data.has_password) {
         const { data } = await sessionsApi.create();
-        localStorage.setItem("authToken", data.authentication_token);
+        cookies.set("authToken", data.authentication_token, {
+          expires: new Date(Date.now() + 3600000),
+        });
         setAuthHeaders();
         setIsLoggedIn(true);
       }
@@ -40,7 +44,7 @@ function Public() {
   };
 
   const checkLogin = () => {
-    const authToken = localStorage.getItem("authToken");
+    const authToken = cookies.get("authToken");
     !!authToken && setIsLoggedIn(true);
     setAuthHeaders();
   };
