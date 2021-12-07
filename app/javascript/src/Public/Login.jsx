@@ -5,6 +5,7 @@ import Logger from "js-logger";
 import { Button } from "neetoui";
 import { Typography, Toastr } from "neetoui/v2";
 import { Input } from "neetoui/v2/formik";
+import Cookies from "universal-cookie";
 import * as yup from "yup";
 
 import { setAuthHeaders } from "apis/axios";
@@ -13,10 +14,14 @@ import sessionsApi from "apis/session";
 import NotFound from "../../Assets/NotFound";
 
 function Login({ setIsLoggedIn }) {
+  const cookies = new Cookies();
   const submitForm = async values => {
     try {
       const { data } = await sessionsApi.create({ login: values });
-      localStorage.setItem("authToken", data.authentication_token);
+      //cookie expires in 1 hour
+      cookies.set("authToken", data.authentication_token, {
+        expires: new Date(Date.now + 3600000),
+      });
       setAuthHeaders();
       setIsLoggedIn(true);
       Toastr.success("Successfully logged in");
