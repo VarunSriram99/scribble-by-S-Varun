@@ -22,6 +22,7 @@ function FullArticle() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchArticle();
   }, [slug]);
 
