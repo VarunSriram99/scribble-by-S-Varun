@@ -27,7 +27,7 @@ class Api::CategoriesControllerTest < ActionDispatch::IntegrationTest
 
   def test_should_delete_categories
     assert_difference "Category.count", -1 do
-      delete api_categories_path + "/#{@category.id}",
+      delete api_category_path(@category),
         headers: @category_headers
       assert_response :success
       response_json = response.parsed_body
@@ -36,14 +36,14 @@ class Api::CategoriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_should_update_category
-    put api_categories_path + "/#{@category.id}",
+    put api_category_path(@category),
       headers: @category_headers,
       params: { "category": { name: "Category" } }
     assert_response :success
     response_json = response.parsed_body
     assert_equal response_json["notice"], t("successfully_updated", entity: "Category")
-    updated_category = Category.find(@category.id)
-    assert_equal updated_category.name, "Category"
+    @category.reload
+    assert_equal @category.name, "Category"
   end
 
   def test_should_reorder_categories
@@ -54,8 +54,10 @@ class Api::CategoriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     response_json = response.parsed_body
     assert_equal response_json["notice"], t("successfully_reordered")
-    assert_equal Category.find(@category.id).order, 2
-    assert_equal Category.find(category2.id).order, 1
+    @category.reload
+    category2.reload
+    assert_equal @category.order, 2
+    assert_equal category2.order, 1
   end
 
   def test_category_should_not_be_created_without_valid_name
@@ -67,7 +69,7 @@ class Api::CategoriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_category_should_not_be_updated_without_valid_name
-    put api_categories_path + "/#{@category.id}",
+    put api_category_path(@category),
       headers: @category_headers,
       params: { "category": { name: nil } }
     assert_response :unprocessable_entity

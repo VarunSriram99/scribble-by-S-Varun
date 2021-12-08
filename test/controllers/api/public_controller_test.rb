@@ -22,14 +22,14 @@ class Api::PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_should_show_requested_category
-    get api_public_index_path + "/#{@article.slug}", headers: { "X-Auth-Token": @site_setting.authentication_token }
+    get api_public_path(@article.slug), headers: { "X-Auth-Token": @site_setting.authentication_token }
     assert_response :success
     response_body = response.parsed_body
-    assert_equal @article.title, response_body["article"]["title"]
+    assert_equal response_body["article"]["title"], @article.title
   end
 
   def test_should_not_show_requested_category_without_valid_slug
-    get api_public_index_path + "/something-which-is-not-a-slug",
+    get api_public_path("/something-which-is-not-a-slug"),
       headers: { "X-Auth-Token": @site_setting.authentication_token }
     assert_response :not_found
   end

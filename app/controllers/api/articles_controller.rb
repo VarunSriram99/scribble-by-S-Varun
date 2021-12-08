@@ -15,8 +15,7 @@ class Api::ArticlesController < ApplicationController
 
   def create
     user = User.first
-    @article = Article.new(article_params.except(:publish).merge(user_id: user.id))
-    if @article.save
+    if (@article = user.articles.new(article_params.except(:publish))) && @article.save
       render status: :ok, json: { notice: t("successfully_created", entity: "Article") }
     else
       error = @article.errors.full_messages.to_sentence

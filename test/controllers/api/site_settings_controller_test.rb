@@ -12,18 +12,19 @@ class Api::SiteSettingsControllerTest < ActionDispatch::IntegrationTest
     get api_site_settings_path, headers: @site_setting_headers
     assert_response :success
     all_site_settings = response.parsed_body
-    assert_equal all_site_settings["site_name"], SiteSetting.first.name
-    assert_equal all_site_settings["has_password"], !SiteSetting.first.password_digest.nil?
+    @site_settings.reload
+    assert_equal all_site_settings["site_name"], @site_settings.name
+    assert_equal all_site_settings["has_password"], !@site_settings.password_digest.nil?
   end
 
   def test_should_update_the_site_settings
-    put api_site_settings_path + "/1",
+    put api_site_setting_path(1),
       headers: @redirection_headers,
       params: { site_settings: { name: "hello" } }
     assert_response :success
     response_json = response.parsed_body
     assert_equal response_json["notice"], t("successfully_updated", entity: "Site Settings")
-    updated_site_setting = SiteSetting.first
-    assert_equal updated_site_setting.name, "hello"
+    @site_settings.reload
+    assert_equal @site_settings.name, "hello"
   end
 end

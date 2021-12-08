@@ -15,7 +15,6 @@ class Api::SessionsControllerTest < ActionDispatch::IntegrationTest
 
   def test_shouldnt_login_with_invalid_credentials
     post api_sessions_path, params: { login: { password: "welcome" } }, as: :json
-
     assert_response :unauthorized
     assert_nil response.parsed_body["notice"]
   end
