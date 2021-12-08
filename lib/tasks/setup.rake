@@ -29,7 +29,5 @@ def create_sample_data!
     {title: "Publishing an article", body: lorem_text, category_id: 3, user_id: 1}]
   Article.create(articles_data)
   articles = Article.all
-  articles.each do |article|
-    article.create_slug
-  end
+  articles.each { |article| article.create_slug }
 end

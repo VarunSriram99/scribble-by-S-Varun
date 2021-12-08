@@ -18,7 +18,7 @@ class Api::ArticlesControllerTest < ActionDispatch::IntegrationTest
 
   def test_should_delete_an_article
     assert_difference "Article.count", -1 do
-      delete api_articles_path + "/#{@article.id}",
+      delete api_article_path(@article),
         headers: @article_headers
       assert_response :success
       response_json = response.parsed_body
@@ -36,7 +36,7 @@ class Api::ArticlesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_show_the_requested_article
-    get api_articles_path + "/#{@article.id}",
+    get api_article_path(@article),
       headers: @article_headers
     assert_response :success
     response_body = response.parsed_body
@@ -45,7 +45,7 @@ class Api::ArticlesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_should_update_article
-    put api_articles_path + "/#{@article.id}",
+    put api_article_path(@article),
       headers: @article_headers,
       params: { "article": { title: "hello", body: "hai", category_id: @article.category_id } }
     assert_response :success
@@ -56,7 +56,7 @@ class Api::ArticlesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_should_not_update_article_without_valid_title
-    put api_articles_path + "/#{@article.id}",
+    put api_article_path(@article),
       headers: @article_headers,
       params: { "article": { title: nil } }
     assert_response :unprocessable_entity

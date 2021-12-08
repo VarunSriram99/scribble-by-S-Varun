@@ -27,7 +27,7 @@ class Api::RedirectionsControllerTest < ActionDispatch::IntegrationTest
 
   def test_should_delete_redirection
     assert_difference "Redirection.count", -1 do
-      delete api_redirections_path + "/#{@redirection.id}",
+      delete api_redirection_path(@redirection),
         headers: @redirection_headers
       assert_response :success
       response_json = response.parsed_body
@@ -36,19 +36,19 @@ class Api::RedirectionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_should_update_redirection
-    put api_redirections_path + "/#{@redirection.id}",
+    put api_redirection_path(@redirection),
       headers: @redirection_headers,
       params: { redirection: { from: "/", to: "/hello" } }
     assert_response :success
     response_json = response.parsed_body
     assert_equal response_json["notice"], t("successfully_updated", entity: "Redirection")
-    updated_redirection = Redirection.find(@redirection.id)
-    assert_equal updated_redirection.from, "/"
-    assert_equal updated_redirection.to, "/hello"
+    @redirection.reload
+    assert_equal @redirection.from, "/"
+    assert_equal @redirection.to, "/hello"
   end
 
   def test_should_not_update_redirection_without_valid_from_and_to_paths
-    put api_redirections_path + "/#{@redirection.id}",
+    put api_redirection_path(@redirection),
       headers: @redirection_headers,
       params: { redirection: { from: "/", to: "/" } }
     assert_response :unprocessable_entity

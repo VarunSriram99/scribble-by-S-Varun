@@ -10,8 +10,7 @@
     end
 
     def create
-      category = Category.new(category_params)
-      if category.save
+      if (category = Category.new(category_params)) && category.save
         render status: :ok, json: { notice: t("successfully_created", entity: "Category") }
       else
         error = category.errors.full_messages.to_sentence
