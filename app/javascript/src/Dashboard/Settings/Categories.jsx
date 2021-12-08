@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
+import { Formik, Form } from "formik";
 import Logger from "js-logger";
 import { Reorder, Edit, Delete, Check } from "neetoicons";
-import { Typography, Button, Toastr, Input, PageLoader } from "neetoui/v2";
+import { Typography, Button, Toastr, PageLoader } from "neetoui/v2";
+import { Input } from "neetoui/v2/formik";
 
 import categoriesApi from "apis/categories";
 
@@ -12,20 +14,16 @@ function Categories({ categoriesData, fetchCategories }) {
   const [categories, setCategories] = useState([]);
   const [currentlyDraggedCategory, setCurrentlyDraggedCategory] = useState(-1);
   const [isAddNewCategoryOpen, setIsAddNewCategoryOpen] = useState(false);
-  const [newCategoryError, setNewCategoryError] = useState("");
   const [currentlyEditedCategory, setCurrentlyEditedCategory] = useState(-1);
   const [currentlyDeletedCategory, setCurrentlyDeletedCategory] = useState(-1);
-  const [editCategoryValue, setEditCategoryValue] = useState("");
-  const [editCategoryError, setEditCategoryError] = useState("");
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const newCategoryReference = useRef();
 
-  const onDragStart = event => {
-    setCurrentlyDraggedCategory(event.target.id);
+  const onDragStart = order => {
+    setCurrentlyDraggedCategory(order);
   };
   const categoriesOrder = [...categories];
-  const onDrop = async event => {
+  const onDrop = async order => {
     try {
       setIsLoading(true);
       //draggedCategory is the category which is currently being dragged
@@ -34,10 +32,13 @@ function Categories({ categoriesData, fetchCategories }) {
       );
       //droppedOverCategory is the category item over which the dragged category is dropped
       const droppedOverCategory = categories.findIndex(
-        category => category.order == event.currentTarget.id
+        category => category.order == order
       );
       // If dragged category dropped over itself, no need to reorder.
-      if (draggedCategory === droppedOverCategory) return;
+      if (draggedCategory === droppedOverCategory) {
+        setIsLoading(false);
+        return;
+      }
 
       // Reordering the element in the array
       const removedElement = categoriesOrder.splice(draggedCategory, 1);
@@ -64,65 +65,52 @@ function Categories({ categoriesData, fetchCategories }) {
     setIsDeleteAlertOpen(true);
   };
 
-  const validateEditCategory = () => {
-    const currentValue = editCategoryValue.trim();
+  const validateCategory = values => {
+    const currentValue = values.name.trim();
     if (currentValue?.length === 0) {
-      setEditCategoryError("Category shouldn't be empty.");
-      return false;
-    } else if (categories.find(category => category.name == currentValue)) {
-      setEditCategoryError("Category should be unique.");
-      return false;
+      return { name: "Category shouldn't be empty." };
+    } else if (
+      categories.find(category => {
+        const skipCheckOfCurrentlyEditedValue = values.isEdit
+          ? currentlyEditedCategory != category.id
+          : true;
+        return category.name == currentValue && skipCheckOfCurrentlyEditedValue;
+      })
+    ) {
+      return { name: "Category should be unique." };
     }
-    setEditCategoryError("");
-    return true;
+
+    return {};
   };
 
-  const handleEdit = async () => {
-    const isValid = validateEditCategory(); //Validation return true if validation passes
-    if (isValid) {
-      try {
-        await categoriesApi.update(currentlyEditedCategory, {
-          category: { name: editCategoryValue },
-        });
-        fetchCategories();
-        Toastr.success("Successfully updated category!");
-        setCurrentlyEditedCategory(-1);
-        setEditCategoryValue("");
-        setEditCategoryError("");
-      } catch (error) {
-        Toastr.error(Error("Error in updating the category!"));
-        Logger.log(error);
-      }
-    }
-  };
-
-  const validateNewCategory = () => {
-    const currentValue = newCategoryReference.current?.value?.trim();
-    if (currentValue?.length === 0) {
-      setNewCategoryError("Category shouldn't be empty.");
-      return false;
-    } else if (categories.find(category => category.name == currentValue)) {
-      setNewCategoryError("Category should be unique.");
-      return false;
-    }
-    setNewCategoryError("");
-    return true;
-  };
-
-  const addNewCategory = async () => {
-    const isValid = validateNewCategory(); //Validation return true if validation passes
-    if (isValid) {
-      try {
+  const CreateOrEditCategory = async values => {
+    setIsLoading(true);
+    try {
+      if (!values.isEdit) {
         await categoriesApi.create({
-          category: { name: newCategoryReference.current?.value?.trim() },
+          category: { name: values.name.trim() },
         });
-        fetchCategories();
         Toastr.success("Successfully created new category!");
         setIsAddNewCategoryOpen(false);
-      } catch (error) {
-        Logger.error(error);
-        Toastr.error(Error("Error in creating new category!"));
+      } else {
+        await categoriesApi.update(currentlyEditedCategory, {
+          category: { name: values.name.trim() },
+        });
+        Toastr.success("Successfully edited category!");
+        setCurrentlyEditedCategory(-1);
       }
+      fetchCategories();
+    } catch (error) {
+      Logger.error(error);
+      Toastr.error(
+        Error(
+          values.isEdit
+            ? "Error in creating new category!"
+            : "Error in editing category!"
+        )
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -131,12 +119,6 @@ function Categories({ categoriesData, fetchCategories }) {
     setCategories(categoriesData);
     setIsLoading(false);
   }, [categoriesData]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    validateEditCategory();
-    setIsLoading(false);
-  }, [editCategoryValue]);
 
   if (isLoading) {
     return (
@@ -154,20 +136,29 @@ function Categories({ categoriesData, fetchCategories }) {
         Create and configure the categories inside your scribble.
       </Typography>
       {isAddNewCategoryOpen ? (
-        <Input
-          placeholder="New category name"
-          ref={newCategoryReference}
-          error={newCategoryError}
-          onChange={() => validateNewCategory()}
-          suffix={
-            <Button
-              style="icon"
-              icon={Check}
-              onClick={() => addNewCategory()}
-            />
-          }
-          className="w-1/3 m-4"
-        />
+        <Formik
+          initialValues={{ name: "", isEdit: false }}
+          validate={validateCategory}
+          onSubmit={CreateOrEditCategory}
+        >
+          {({ setFieldValue }) => (
+            <Form>
+              <Input
+                placeholder="New category name"
+                name="name"
+                suffix={
+                  <Button
+                    style="icon"
+                    icon={Check}
+                    type="submit"
+                    onClick={() => setFieldValue("isEdit", false)}
+                  />
+                }
+                className="w-1/3 m-4"
+              />
+            </Form>
+          )}
+        </Formik>
       ) : (
         <Button
           label="+ Add new category"
@@ -181,23 +172,37 @@ function Categories({ categoriesData, fetchCategories }) {
         currentlyEditedCategory === category.id ? (
           <div
             key={category.id}
+            id={category.order}
             className="w-full flex justify-between border-t p-4"
+            draggable
+            onDragStart={() => onDragStart(category.order)}
+            onDragOver={e => e.preventDefault()}
+            onDrop={() => onDrop(category.order)}
           >
-            <div className="flex">
-              <Reorder />
-              <Input
-                placeholder="New category name"
-                value={editCategoryValue}
-                onChange={e => setEditCategoryValue(e.target.value)}
-                error={editCategoryError}
-                suffix={
-                  <Button
-                    style="icon"
-                    icon={Check}
-                    onClick={() => handleEdit()}
-                  />
-                }
-              />
+            <div>
+              <Formik
+                initialValues={{ name: category.name, isEdit: true }}
+                validate={validateCategory}
+                onSubmit={CreateOrEditCategory}
+              >
+                {({ setFieldValue }) => (
+                  <Form className="flex items-center">
+                    <Reorder />
+                    <Input
+                      placeholder="New category name"
+                      name="name"
+                      suffix={
+                        <Button
+                          style="icon"
+                          icon={Check}
+                          onClick={() => setFieldValue("isEdit", true)}
+                          type="submit"
+                        />
+                      }
+                    />
+                  </Form>
+                )}
+              </Formik>
             </div>
           </div>
         ) : (
@@ -206,9 +211,9 @@ function Categories({ categoriesData, fetchCategories }) {
             id={category.order}
             className="w-full flex justify-between border-t p-4"
             draggable
-            onDragStart={e => onDragStart(e)}
+            onDragStart={() => onDragStart(category.order)}
             onDragOver={e => e.preventDefault()}
-            onDrop={e => onDrop(e)}
+            onDrop={() => onDrop(category.order)}
           >
             <div className="flex">
               <Reorder />
@@ -219,10 +224,7 @@ function Categories({ categoriesData, fetchCategories }) {
                 icon={Edit}
                 style="icon"
                 iconPosition="left"
-                onClick={() => {
-                  setCurrentlyEditedCategory(category.id);
-                  setEditCategoryValue(category.name);
-                }}
+                onClick={() => setCurrentlyEditedCategory(category.id)}
               />
               <Button
                 icon={Delete}

@@ -5,14 +5,11 @@ class Api::SessionsController < ApplicationController
 
   def create
     site_setting = SiteSetting.first
-    if site_setting.password_digest.nil?
+    password_does_not_exist = site_setting.password_digest.nil?
+    if password_does_not_exist || site_setting.authenticate(login_params[:password])
       render status: :ok, json: { authentication_token: site_setting.authentication_token }
     else
-      unless site_setting.authenticate(login_params[:password])
-        render status: :unauthorized, json: { error: t("session.incorrect_credentials") }
-      else
-        render status: :ok, json: { authentication_token: site_setting.authentication_token }
-      end
+      render status: :unauthorized, json: { error: t("session.incorrect_credentials") }
     end
   end
 

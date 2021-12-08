@@ -15,7 +15,9 @@ function General() {
   const [hasPassword, setHasPassword] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState(["length", "character"]);
   const [siteName, setSiteName] = useState("");
-  const initialValues = hasPassword ? { name: "", password: "" } : { name: "" };
+  const initialValues = hasPassword
+    ? { name: siteName, password: "" }
+    : { name: siteName };
   const handleSubmit = async values => {
     try {
       hasPassword
