@@ -65,7 +65,11 @@ function Public() {
   return (
     <div className="w-full h-full">
       <Header siteName={siteName} />
-      {isLoggedIn ? <Articles /> : <Login setIsLoggedIn={setIsLoggedIn} />}
+      {isLoggedIn ? (
+        <Articles siteName={siteName} />
+      ) : (
+        <Login setIsLoggedIn={setIsLoggedIn} />
+      )}
       <Switch>
         {redirections.map((redirection, key) => (
           <Redirect
