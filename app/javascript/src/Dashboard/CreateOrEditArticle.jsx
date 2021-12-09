@@ -76,15 +76,7 @@ function CreateOrEditArticle({ isEdit }) {
       const { data } = await categoriesApi.fetchCategories();
 
       //To sort the categories based on order
-      setCategories(
-        data.Categories.sort((a, b) => {
-          if (a.order < b.order) return -1;
-
-          if (a.order > b.order) return 1;
-
-          return 0;
-        })
-      );
+      setCategories(data.Categories);
     } catch (error) {
       Logger.log(error);
       Toastr.error("Error in fetching Category data");

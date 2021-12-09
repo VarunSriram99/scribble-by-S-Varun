@@ -22,8 +22,9 @@ function Categories({ categoriesData, fetchCategories }) {
   const onDragStart = order => {
     setCurrentlyDraggedCategory(order);
   };
-  const categoriesOrder = [...categories];
+
   const onDrop = async order => {
+    const categoriesOrder = [...categories];
     try {
       setIsLoading(true);
       //draggedCategory is the category which is currently being dragged
@@ -71,6 +72,7 @@ function Categories({ categoriesData, fetchCategories }) {
       return { name: "Category shouldn't be empty." };
     } else if (
       categories.find(category => {
+        // When we check for uniqueness for an edited category, we should avoid comparing it with the initial value of itself.
         const skipCheckOfCurrentlyEditedValue = values.isEdit
           ? currentlyEditedCategory != category.id
           : true;

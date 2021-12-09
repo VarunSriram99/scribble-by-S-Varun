@@ -15,7 +15,8 @@ function Dashboard() {
       <Route exact path="/settings" component={SettingsPage} />
       <Route exact path="/articles/new" component={CreateOrEditArticle} />
       <Route exact path="/articles/edit/:id">
-        <CreateOrEditArticle isEdit />
+        <CreateOrEditArticle isEdit />{" "}
+        {/* We are reusing the same component for creating and editing article. isEdit lets know that article is being edited. */}
       </Route>
     </div>
   );

@@ -18,7 +18,7 @@ def create_sample_data!
     {name: "Navigation"},
     {name: "Misc."}]
   Category.create(categories)
-  lorem_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt"
+  lorem_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt".freeze
   articles_data = [{title: "Setting up", body: lorem_text, category_id: 5, user_id: 1 },
     {title: "Writing an article", body: lorem_text, category_id: 3, user_id: 1},
     {title: "Welcome to Scribble", body: lorem_text, category_id: 1, user_id: 1},

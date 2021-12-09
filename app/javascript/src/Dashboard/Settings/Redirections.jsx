@@ -41,7 +41,7 @@ function Redirections() {
       const currentRedirectionIndex = modifiedRedirectionsData.findIndex(
         redirection => redirection.id === currentlyEditedRedirection
       );
-      modifiedRedirectionsData.splice(currentRedirectionIndex, 1); // Remove the currently edit data so that duplicate from url won't be affected for current element
+      modifiedRedirectionsData.splice(currentRedirectionIndex, 1); // Remove the currently edited data so that duplicate from url won't be affected for current element
     }
     const errors = { from: "", to: "" };
     if (
@@ -65,19 +65,18 @@ function Redirections() {
       errors.to = "To path cannot be equal to From path";
     }
 
+    // If the "from" path of current redirection equal to "to" path of previous redirection and vice versa, it will form an infinite loop.
     if (
       modifiedRedirectionsData.find(
         redirection =>
-          redirection.from === toPath && redirection.to === fromPath
+          redirection.from === toPath && redirection.to === fromPath //check whether current "from" path equal to previous "to" path and vice versa
       )
     ) {
       errors.from = "From and To paths form a loop with a previous redirection";
       errors.to = "From and To paths form a loop with a previous redirection";
     }
 
-    if (errors.from.length == 0 && errors.to.length == 0) {
-      return {};
-    }
+    if (errors.from.length == 0 && errors.to.length == 0) return {};
 
     return errors;
   };
@@ -151,7 +150,7 @@ function Redirections() {
               >
                 <Formik
                   initialValues={{
-                    from: redirection.from.slice(1),
+                    from: redirection.from.slice(1), //slice(1) because the path will be of form "/path" and we need only "path"
                     to: redirection.to.slice(1),
                     isEdit: true,
                   }}

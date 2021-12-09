@@ -5,7 +5,7 @@ class Api::PublicController < ApplicationController
   before_action :authenticate_user_using_x_auth_token
 
   def index
-    @categories = Category.all
+    @categories = Category.all.order(:order)
   end
 
   def show

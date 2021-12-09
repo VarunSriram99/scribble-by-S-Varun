@@ -15,9 +15,9 @@ function FullArticle() {
 
   const fetchArticle = async () => {
     try {
+      setIsLoading(true);
       const { data } = await publicApi.show(slug);
       setArticle(data.article);
-      setIsLoading(false);
     } catch (error) {
       Logger.log(error);
       setIsError(true);
@@ -27,7 +27,6 @@ function FullArticle() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     setIsError(false);
     fetchArticle();
   }, [slug]);
