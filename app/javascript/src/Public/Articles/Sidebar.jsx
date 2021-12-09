@@ -21,7 +21,7 @@ function Sidebar({ categoriesData }) {
     setExpandedCategories(currentlyExpandedCategories);
   };
   return (
-    <div className="w-1/5 h-screen border-r ml-4 pt-8">
+    <div className="w-1/5 h-screen border-r ml-4 pt-8 overflow-y-auto">
       <ul className="space-y-4">
         {categoriesData.map((category, key) => (
           <li key={key}>

@@ -101,7 +101,7 @@ function TableView({
   }, [selectedColumns]);
 
   return (
-    <>
+    <div className="overflow-y-auto h-screen">
       <Typography style="h4" className="m-6">
         {data.length} Articles
       </Typography>
@@ -142,7 +142,7 @@ function TableView({
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 
