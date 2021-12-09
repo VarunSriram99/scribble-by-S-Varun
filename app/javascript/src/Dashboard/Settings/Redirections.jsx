@@ -90,29 +90,34 @@ function Redirections() {
   };
 
   const handleEdit = async (fromPath, toPath) => {
-    await redirectionsApi.update(currentlyEditedRedirection, {
-      from: fromPath,
-      to: toPath,
-    });
-    setCurrentlyEditedRedirection(-1);
+    try {
+      await redirectionsApi.update(currentlyEditedRedirection, {
+        from: fromPath,
+        to: toPath,
+      });
+      setCurrentlyEditedRedirection(-1);
+    } catch (error) {
+      logger.log(error);
+    }
   };
 
   const handleCreate = async (fromPath, toPath) => {
-    await redirectionsApi.create({ from: fromPath, to: toPath });
-    setIsNewRedirectionOpen(false);
+    try {
+      await redirectionsApi.create({ from: fromPath, to: toPath });
+      setIsNewRedirectionOpen(false);
+    } catch (error) {
+      logger.log(error);
+    }
   };
 
   const handleRedirectionSubmission = values => {
     const fromPath = `/${values.from.trim()}`;
     const toPath = `/${values.to.trim()}`;
-    try {
-      if (values.isEdit) handleEdit(fromPath, toPath);
-      else handleCreate(fromPath, toPath);
 
-      fetchRedirections();
-    } catch (error) {
-      logger.log(error);
-    }
+    if (values.isEdit) handleEdit(fromPath, toPath);
+    else handleCreate(fromPath, toPath);
+
+    fetchRedirections();
   };
 
   useEffect(() => {
