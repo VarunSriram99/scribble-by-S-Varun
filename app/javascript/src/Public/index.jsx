@@ -7,13 +7,13 @@ import Cookie from "universal-cookie";
 
 import { setAuthHeaders } from "apis/axios";
 import redirectionsApi from "apis/redirections";
+import sessionsApi from "apis/session";
 import siteSettingsApi from "apis/sitesettings";
 
 import Articles from "./Articles";
 import Header from "./Header";
 import Login from "./Login";
 
-import sessionsApi from "../apis/session";
 import CenteredPageLoader from "../common/CenteredPageLoader";
 
 function Public() {
@@ -31,7 +31,7 @@ function Public() {
       if (!data.has_password) {
         const { data } = await sessionsApi.create();
         cookies.set("authToken", data.authentication_token, {
-          expires: new Date(Date.now() + 3600000),
+          expires: new Date(Date.now() + 3600000), // expires in one hour
         });
         setAuthHeaders();
         setIsLoggedIn(true);
@@ -50,8 +50,12 @@ function Public() {
   };
 
   const fetchRedirections = async () => {
-    const { data } = await redirectionsApi.fetchRedirectionsData();
-    setRedirections(data.Redirections);
+    try {
+      const { data } = await redirectionsApi.fetchRedirectionsData();
+      setRedirections(data.Redirections);
+    } catch {
+      Toastr.error(Error("Error in fetching redirections!"));
+    }
   };
 
   useEffect(() => {

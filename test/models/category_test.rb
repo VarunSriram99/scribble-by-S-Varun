@@ -14,13 +14,13 @@ class CategoryTest < ActiveSupport::TestCase
   def test_category_should_not_be_blank
     @category.name = nil
     assert_not @category.valid?
-    assert_equal ["Name can't be blank"], @category.errors.full_messages
+    assert_equal @category.errors.full_messages, ["Name can't be blank"]
   end
 
   def test_category_should_be_unique
     @category.save!
     category2 = @category.dup
     assert_not category2.valid?
-    assert_equal ["Name has already been taken"], category2.errors.full_messages
+    assert_equal category2.errors.full_messages, ["Name has already been taken"]
   end
 end

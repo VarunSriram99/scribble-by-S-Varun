@@ -98,6 +98,7 @@ function General() {
           <div className={classNames({ hidden: !hasPassword })}>
             <Input label="Password" name="password" type="password" />
             <span className="flex items-center space-x-2">
+              {/* If passwordErrors includes "length" it means that password doesn't have six characters */}
               {passwordErrors.includes("length") ? (
                 <Close size={15} className="text-red-600 font-bold" />
               ) : (
@@ -106,6 +107,7 @@ function General() {
               Have at least 6 characters
             </span>
             <span className="flex items-center space-x-2">
+              {/* If passwordErrors includes "character" it means that password doesn't have the correct combination of 1 letter and 1 number */}
               {passwordErrors.includes("character") ? (
                 <Close size={15} className="text-red-600 font-bold" />
               ) : (

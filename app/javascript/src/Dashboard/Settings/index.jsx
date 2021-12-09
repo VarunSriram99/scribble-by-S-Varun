@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { Toastr } from "neetoui/v2";
+
 import categoriesApi from "apis/categories";
 
 import Categories from "./Categories";
@@ -12,17 +14,13 @@ function SettingsPage() {
   const [categoriesData, setCategoriesData] = useState([]);
 
   const fetchCategories = async () => {
-    const { data } = await categoriesApi.fetchCategories();
-    //To sort the categories based on order
-    setCategoriesData(
-      data.Categories.sort((a, b) => {
-        if (a.order < b.order) return -1;
-
-        if (a.order > b.order) return 1;
-
-        return 0;
-      })
-    );
+    try {
+      const { data } = await categoriesApi.fetchCategories();
+      //To sort the categories based on order
+      setCategoriesData(data.Categories);
+    } catch {
+      Toastr.error(Error("Error in fetching categories!"));
+    }
   };
 
   useEffect(() => {

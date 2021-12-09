@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
+import { Formik, Form } from "formik";
 import Logger from "js-logger";
 import { Plus, Search, Check, Close } from "neetoicons";
 import { Typography, Input, Button, Toastr } from "neetoui/v2";
+import { Input as FormikInput } from "neetoui/v2/formik";
 import { MenuBar } from "neetoui/v2/layouts";
 
 import categoriesApi from "apis/categories";
@@ -18,50 +20,39 @@ function SideBar({
   const [isSearchBoxCollapsed, setIsSearchBoxCollapsed] = useState(true);
   const [categories, setCategories] = useState([]);
   const [categorySearch, setCategorySearch] = useState("");
-  const [error, setError] = useState("");
-  const newCategory = useRef();
 
   const publishedStatuses = ["All", "Draft", "Published"];
   const fetchCategories = async () => {
-    const { data } = await categoriesApi.fetchCategories();
-    //To sort the categories based on order
-    setCategories(
-      data.Categories.sort((a, b) => {
-        if (a.order < b.order) return -1;
-
-        if (a.order > b.order) return 1;
-
-        return 0;
-      })
-    );
+    try {
+      const { data } = await categoriesApi.fetchCategories();
+      //To sort the categories based on order
+      setCategories(data.Categories);
+    } catch {
+      Toastr.error(Error("Error in fetching categories!"));
+    }
   };
   //Validation for addNewCategory
-  const validateAddNewCategory = () => {
-    const currentValue = newCategory.current.value.trim();
+  const validateAddNewCategory = values => {
+    const currentValue = values.name.trim();
     if (currentValue.length === 0) {
-      setError("Category shouldn't be empty.");
-      return false;
+      return { name: "Category shouldn't be empty." };
     } else if (categories.find(category => category.name == currentValue)) {
-      setError("Category should be unique.");
-      return false;
+      return { name: "Category should be unique." };
     }
-    setError("");
-    return true;
+
+    return {};
   };
 
-  const addCategory = async () => {
-    const currentValue = newCategory.current.value.trim();
-    const isValid = validateAddNewCategory();
-    if (isValid) {
-      try {
-        await categoriesApi.create({ category: { name: currentValue } });
-        Toastr.success("Successfully added category");
-        fetchCategories();
-        setIsTextBoxCollapsed(true);
-      } catch (error) {
-        Logger.error(error);
-        Toastr.error(Error("Something went wrong!"));
-      }
+  const addCategory = async values => {
+    const currentValue = values.name.trim();
+    try {
+      await categoriesApi.create({ category: { name: currentValue } });
+      Toastr.success("Successfully added category");
+      fetchCategories();
+      setIsTextBoxCollapsed(true);
+    } catch (error) {
+      Logger.error(error);
+      Toastr.error(Error("Something went wrong!"));
     }
   };
 
@@ -75,6 +66,7 @@ function SideBar({
     status === "All"
       ? articleData.length
       : articleData.filter(article => article.status === status).length;
+
   const countCategory = category =>
     articleData.filter(article => article.category === category).length;
 
@@ -125,16 +117,23 @@ function SideBar({
         </Typography>
       </MenuBar.SubTitle>
       {!isTextBoxCollapsed && (
-        <Input
-          error={error}
-          ref={newCategory}
-          placeholder="Add new category"
-          onChange={() => validateAddNewCategory()}
-          suffix={
-            <Button style="icon" icon={Check} onClick={() => addCategory()} />
-          }
-          className="my-2"
-        />
+        <Formik
+          initialValues={{ name: "" }}
+          enableReinitialize
+          validate={validateAddNewCategory}
+          onSubmit={addCategory}
+        >
+          {() => (
+            <Form>
+              <FormikInput
+                name="name"
+                placeholder="Add new category"
+                suffix={<Button style="icon" type="submit" icon={Check} />}
+                className="my-2"
+              />
+            </Form>
+          )}
+        </Formik>
       )}
       {!isSearchBoxCollapsed && (
         <Input

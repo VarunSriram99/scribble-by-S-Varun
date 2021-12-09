@@ -15,14 +15,7 @@ function Articles({ siteName }) {
   const fetchCategories = async () => {
     try {
       const { data } = await publicApi.fetchPublic();
-      setCategoriesData(
-        data.categories.sort((a, b) => {
-          if (a.order > b.order) return 1;
-          else if (a.order < b.order) return -1;
-
-          return 0;
-        })
-      );
+      setCategoriesData(data.categories);
     } catch (error) {
       Logger.log(error);
       Toastr.error(Error("Error in fetching public data!"));
