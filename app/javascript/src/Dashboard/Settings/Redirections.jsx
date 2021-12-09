@@ -191,8 +191,8 @@ function Redirections() {
                 key={key}
                 className="bg-white border-8 text-left border-indigo-100 flex items-center w-full justify-between"
               >
-                <div className="p-4 text-left w-5/12">{`https://scribble.com${redirection.from}`}</div>
-                <div className="p-4 text-left w-5/12">{`https://scribble.com${redirection.to}`}</div>
+                <div className="p-4 text-left w-5/12 overflow-x-auto">{`https://scribble.com${redirection.from}`}</div>
+                <div className="p-4 text-left w-5/12 overflow-x-auto">{`https://scribble.com${redirection.to}`}</div>
                 <div>
                   <div className="space-x-4 w-2/12 flex mx-2">
                     <Button

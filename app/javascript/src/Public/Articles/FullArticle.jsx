@@ -51,7 +51,7 @@ function FullArticle() {
   }
 
   return (
-    <div className="w-4/5 m-4 flex flex-col justify-start space-y-4 overflow-y-scroll h-screen">
+    <div className="w-4/5 m-4 flex flex-col justify-start space-y-4 overflow-y-auto h-screen">
       <Typography style="h1">{article.title}</Typography>
       <div className="space-x-4 flex">
         <Badge color="blue" type="squared">
