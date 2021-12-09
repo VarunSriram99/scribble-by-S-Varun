@@ -23,10 +23,10 @@ function SideBar({
 
   const publishedStatuses = ["All", "Draft", "Published"];
   const fetchCategories = async () => {
-    const { data } = await categoriesApi.fetchCategories();
+    const { data } = await categoriesApi.fetchCategories(); // TODO: Read https://www.bigbinary.com/react-best-practices/handling-async-code#always-use-try-catch-blocks-with-async-functions
     //To sort the categories based on order
     setCategories(
-      data.Categories.sort((a, b) => {
+      data.Categories.sort((a, b) => { // TODO: Big antipattern here. Why have you named it with capital "C"? All varaibles should be lowercase unless it's a Component or class.
         if (a.order < b.order) return -1;
 
         if (a.order > b.order) return 1;
@@ -39,7 +39,7 @@ function SideBar({
   const validateAddNewCategory = () => {
     const currentValue = newCategory.current.value.trim();
     if (currentValue.length === 0) {
-      setError("Category shouldn't be empty.");
+      setError("Category shouldn't be empty."); // TODO: Learn to use Formik with Yup validations.
       return false;
     } else if (categories.find(category => category.name == currentValue)) {
       setError("Category should be unique.");
@@ -55,18 +55,18 @@ function SideBar({
     if (isValid) {
       try {
         await categoriesApi.create({ category: { name: currentValue } });
-        Toastr.success("Successfully added category");
+        Toastr.success("Successfully added category"); // TODO: Why are you calling success Toastr over here? This should be handled by Axios interceptor itself.
         fetchCategories();
         setIsTextBoxCollapsed(true);
       } catch (error) {
         Logger.error(error);
-        Toastr.error(Error("Something went wrong!"));
+        Toastr.error(Error("Something went wrong!")); // TODO: Why add error toastr here? Axios interceptor should show the message from backend.
       }
     }
   };
 
   const handleCategoryChange = clickedCategory => {
-    clickedCategory === currentCategory
+    clickedCategory === currentCategory // TODO: Could've moved this conditional to be within the setter.
       ? setCurrentCategory("")
       : setCurrentCategory(clickedCategory);
   };
@@ -80,7 +80,7 @@ function SideBar({
 
   const toggleSearch = () => {
     setIsSearchBoxCollapsed(!isSearchBoxCollapsed);
-    !isTextBoxCollapsed && setIsTextBoxCollapsed(true);
+    !isTextBoxCollapsed && setIsTextBoxCollapsed(true); // TODO: Couldn't you have done: setIsTextBoxCollapsed(isTextBoxCollapsed)?
     !isSearchBoxCollapsed && setCategorySearch("");
   };
 

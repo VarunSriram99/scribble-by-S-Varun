@@ -14,7 +14,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    initializeLogger();
+    initializeLogger(); // TODO: You have initalized logger but haven't `logger` but rather have used Logger by importing. This suggests to me that you haven't understood what this function does.
     setIsLoading(false);
   }, []);
 

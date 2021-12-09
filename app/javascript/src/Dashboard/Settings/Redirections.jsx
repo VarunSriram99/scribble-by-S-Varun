@@ -86,7 +86,7 @@ function Redirections() {
     setCurrentlyDeletedRedirection(id);
     setIsDeleteAlertOpen(true);
   };
-  const handleCreateOrEdit = async values => {
+  const handleCreateOrEdit = async values => { // TODO: The function is a bit bulky. Could have called this handleRedirectionSubmission and added two different functions for create and edit and invoked it from this function.
     const fromPath = `/${values.from.trim()}`;
     const toPath = `/${values.to.trim()}`;
     try {

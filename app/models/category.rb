@@ -4,7 +4,7 @@ class Category < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :order, presence: true
 
-  before_validation :add_order_number, on: :create
+  before_validation :add_order_number, on: :create # TODO: Why should this be before_validation? Could've made this before_save right?
 
   has_many :articles, dependent: :nullify
 

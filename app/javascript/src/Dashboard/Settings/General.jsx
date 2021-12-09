@@ -18,13 +18,13 @@ function General() {
   const initialValues = hasPassword
     ? { name: siteName, password: "" }
     : { name: siteName };
-  const handleSubmit = async values => {
+  const handleSubmit = async values => { // TODO: Please for the love of god add newlines before/after declartions. You are not saving anything by writing congested code like this. Had pointed this out in my video too.
     try {
       hasPassword
         ? await sitesettingsApi.update({ site_settings: values })
         : await sitesettingsApi.update({
-            site_settings: { name: values.name, password: null },
-          });
+          site_settings: { name: values.name, password: null },
+        });
       Toastr.success("Successfully updated general settings");
     } catch (error) {
       Logger.log(error);

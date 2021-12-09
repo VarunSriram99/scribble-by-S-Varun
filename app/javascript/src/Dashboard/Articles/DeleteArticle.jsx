@@ -1,6 +1,6 @@
 import React from "react";
 
-import Logger from "js-logger";
+import Logger from "js-logger"; // TODO: Could have added babel-js-logger like we did in LRRB so as to avoid the imports.
 import { Alert, Toastr } from "neetoui/v2";
 
 import articlesApi from "apis/articles";
@@ -19,7 +19,7 @@ function DeleteArticle({
       setIsDeleteAlertOpen(false);
     } catch (error) {
       Logger.log(error);
-      Toastr.error(Error("Error in deleting the article!"));
+      Toastr.error(Error("Error in deleting the article!")); // TODO: No need to create an error obj. Just pass a string. Go through the components code in neeto-ui to understand.
     }
   };
   return (

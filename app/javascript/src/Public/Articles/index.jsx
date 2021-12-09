@@ -14,7 +14,7 @@ function Articles({ siteName }) {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await publicApi.fetchPublic();
+      const { data } = await publicApi.fetchPublic(); // TODO: What does this API name even mean? What does it mean to fetchPublic? How does it resonate well the business logic?
       setCategoriesData(
         data.categories.sort((a, b) => {
           if (a.order > b.order) return 1;

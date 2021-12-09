@@ -17,7 +17,7 @@ function Login({ setIsLoggedIn }) {
   const cookies = new Cookies();
   const submitForm = async values => {
     try {
-      const { data } = await sessionsApi.create({ login: values });
+      const { data } = await sessionsApi.create({ login: values }); // TODO: What is the point of having this key "login" in the payload? If it's absolutely necessary then why are you making the dev write it each time? Add the key in the api function declaration itself.
       //cookie expires in 1 hour
       cookies.set("authToken", data.authentication_token, {
         expires: new Date(Date.now + 3600000),

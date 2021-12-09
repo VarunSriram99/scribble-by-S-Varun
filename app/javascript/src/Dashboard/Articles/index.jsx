@@ -17,7 +17,7 @@ function Articles() {
   const [currentlyDeletedArticle, setCurrentlyDeletedArticle] = useState(-1);
 
   const fetchArticlesData = async () => {
-    const { data } = await articlesApi.fetchArticles();
+    const { data } = await articlesApi.fetchArticles(); // TODO: Always embed async code within try-catch blocks. No exception to this rule BB.
     setArticleData(data.articles);
   };
 

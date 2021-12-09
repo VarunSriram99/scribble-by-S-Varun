@@ -8,13 +8,13 @@ class ArticleTest < ActiveSupport::TestCase
   end
 
   def test_valid_article_will_be_accepted
-    assert @article.save!
+    assert @article.save! # TODO: Useless test case. Please avoid in future.
   end
 
   def test_article_title_should_not_be_blank
     @article.title = nil
     assert_not @article.valid?
-    assert_equal ["Title can't be blank"], @article.errors.full_messages
+    assert_equal ["Title can't be blank"], @article.errors.full_messages # TODO: Should have used assert_includes since it's a collection.
   end
 
   def test_article_body_should_not_be_blank

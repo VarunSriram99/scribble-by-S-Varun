@@ -23,19 +23,19 @@ function CreateOrEditArticle({ isEdit }) {
       const { data } = await articlesApi.show(id);
       isEdit
         ? setInitialValues({
-            title: data.article.title,
-            body: data.article.body,
-            category: {
-              value: data.article.category_id,
-              label: data.article.category,
-            },
-          })
+          title: data.article.title,
+          body: data.article.body,
+          category: {
+            value: data.article.category_id,
+            label: data.article.category,
+          },
+        })
         : setInitialValues({
-            title: "",
-            body: "",
-            category: "",
-            publish: false,
-          });
+          title: "",
+          body: "",
+          category: "",
+          publish: false,
+        });
     } catch (error) {
       Logger.log(error);
       Toastr.error(Error("Error in fetching article."));
@@ -49,7 +49,7 @@ function CreateOrEditArticle({ isEdit }) {
   };
 
   const handleSubmit = async values => {
-    if (!values.category.value) return false;
+    if (!values.category.value) return false; // TODO: Add a newline after guard clause since we are exiting from scope.
     try {
       const payload = {
         article: {
