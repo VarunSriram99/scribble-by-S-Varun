@@ -8,18 +8,21 @@ function Sidebar({ categoriesData }) {
 
   const addCategoryToExpandedCategories = key => {
     const currentlyExpandedCategories = [...expandedCategories];
+
     currentlyExpandedCategories.push(key);
     setExpandedCategories(currentlyExpandedCategories);
   };
 
   const removeCategoryFromExpandedCategories = key => {
     const currentlyExpandedCategories = [...expandedCategories];
+
     currentlyExpandedCategories.splice(
       currentlyExpandedCategories.indexOf(key),
       1
     );
     setExpandedCategories(currentlyExpandedCategories);
   };
+
   return (
     <div className="w-1/5 h-screen border-r ml-4 pt-8 overflow-y-auto">
       <ul className="space-y-4">

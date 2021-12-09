@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 json.article do
   json.extract! @article,
-  :title,
-  :body
+    :title,
+    :body
   json.date @article.published_date.strftime("%e %B, %Y")
   json.category @article.category&.name
 end

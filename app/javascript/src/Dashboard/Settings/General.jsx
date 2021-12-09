@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 
 import classNames from "classnames";
 import { Formik, Form } from "formik";
-import Logger from "js-logger";
 import { Check, Close } from "neetoicons";
 import { Checkbox, Button } from "neetoui";
-import { Typography, Toastr } from "neetoui/v2";
+import { Typography } from "neetoui/v2";
 import { Input } from "neetoui/v2/formik";
 import * as yup from "yup";
 
@@ -13,37 +12,39 @@ import sitesettingsApi from "apis/sitesettings";
 
 function General() {
   const [hasPassword, setHasPassword] = useState(false);
+
   const [passwordErrors, setPasswordErrors] = useState(["length", "character"]);
+
   const [siteName, setSiteName] = useState("");
+
   const initialValues = hasPassword
     ? { name: siteName, password: "" }
     : { name: siteName };
+
   const handleSubmit = async values => {
     try {
       hasPassword
-        ? await sitesettingsApi.update({ site_settings: values })
-        : await sitesettingsApi.update({
-            site_settings: { name: values.name, password: null },
-          });
-      Toastr.success("Successfully updated general settings");
+        ? await sitesettingsApi.update(values)
+        : await sitesettingsApi.update({ name: values.name, password: null });
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Couldn't update general settings"));
+      logger.log(error);
     }
   };
+
   const validationSchema = {
     name: yup.string().trim().required("Site name is required"),
   };
+
   const fetchSiteName = async () => {
     try {
       const { data } = await sitesettingsApi.fetchSiteSettings();
       setSiteName(data.site_name);
       setHasPassword(data.has_password);
     } catch (error) {
-      Toastr.error("Couldn't fetch sitename");
-      Logger.log(error);
+      logger.log(error);
     }
   };
+
   const validate = ({ password }) => {
     if (hasPassword) {
       // We are using seperate state to append arrays because there is need to handle two error messages simultaneously which is not available in yup.
@@ -63,6 +64,7 @@ function General() {
   useEffect(() => {
     fetchSiteName();
   }, []);
+
   return (
     <Formik
       initialValues={initialValues}

@@ -1,7 +1,6 @@
 import React from "react";
 
-import Logger from "js-logger";
-import { Alert, Toastr } from "neetoui/v2";
+import { Alert } from "neetoui/v2";
 
 import categoriesApi from "apis/categories";
 
@@ -15,13 +14,12 @@ function DeleteCategory({
     try {
       await categoriesApi.destroy(currentlyDeletedCategory);
       fetchCategories();
-      Toastr.success("Successfully deleted category!");
       setIsDeleteAlertOpen(false);
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Error in deleting the category!"));
+      logger.log(error);
     }
   };
+
   return (
     <Alert
       title="Delete Category"

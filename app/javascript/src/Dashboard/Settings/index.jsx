@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { Toastr } from "neetoui/v2";
-
 import categoriesApi from "apis/categories";
 
 import Categories from "./Categories";
@@ -11,15 +9,16 @@ import SideBar from "./SideBar";
 
 function SettingsPage() {
   const [currentSetting, setCurrentSetting] = useState("general");
+
   const [categoriesData, setCategoriesData] = useState([]);
 
   const fetchCategories = async () => {
     try {
       const { data } = await categoriesApi.fetchCategories();
       //To sort the categories based on order
-      setCategoriesData(data.Categories);
-    } catch {
-      Toastr.error(Error("Error in fetching categories!"));
+      setCategoriesData(data.categories);
+    } catch (error) {
+      logger.log(error);
     }
   };
 

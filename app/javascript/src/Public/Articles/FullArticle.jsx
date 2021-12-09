@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import Logger from "js-logger";
 import { Badge } from "neetoui";
 import { Typography, PageLoader } from "neetoui/v2";
 import { useParams } from "react-router-dom";
@@ -9,8 +8,11 @@ import publicApi from "apis/public";
 
 function FullArticle() {
   const { slug } = useParams();
+
   const [article, setArticle] = useState({});
+
   const [isLoading, setIsLoading] = useState(true);
+
   const [isError, setIsError] = useState(false);
 
   const fetchArticle = async () => {
@@ -19,7 +21,7 @@ function FullArticle() {
       const { data } = await publicApi.show(slug);
       setArticle(data.article);
     } catch (error) {
-      Logger.log(error);
+      logger.log(error);
       setIsError(true);
     } finally {
       setIsLoading(false);

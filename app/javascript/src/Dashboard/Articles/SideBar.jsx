@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import { Formik, Form } from "formik";
-import Logger from "js-logger";
 import { Plus, Search, Check, Close } from "neetoicons";
-import { Typography, Input, Button, Toastr } from "neetoui/v2";
+import { Typography, Input, Button } from "neetoui/v2";
 import { Input as FormikInput } from "neetoui/v2/formik";
 import { MenuBar } from "neetoui/v2/layouts";
 
@@ -17,20 +16,25 @@ function SideBar({
   articleData,
 }) {
   const [isTextBoxCollapsed, setIsTextBoxCollapsed] = useState(true);
+
   const [isSearchBoxCollapsed, setIsSearchBoxCollapsed] = useState(true);
+
   const [categories, setCategories] = useState([]);
+
   const [categorySearch, setCategorySearch] = useState("");
 
   const publishedStatuses = ["All", "Draft", "Published"];
+
   const fetchCategories = async () => {
     try {
       const { data } = await categoriesApi.fetchCategories();
       //To sort the categories based on order
-      setCategories(data.Categories);
-    } catch {
-      Toastr.error(Error("Error in fetching categories!"));
+      setCategories(data.categories);
+    } catch (error) {
+      logger.log(error);
     }
   };
+
   //Validation for addNewCategory
   const validateAddNewCategory = values => {
     const currentValue = values.name.trim();
@@ -46,20 +50,18 @@ function SideBar({
   const addCategory = async values => {
     const currentValue = values.name.trim();
     try {
-      await categoriesApi.create({ category: { name: currentValue } });
-      Toastr.success("Successfully added category");
+      await categoriesApi.create({ name: currentValue });
       fetchCategories();
       setIsTextBoxCollapsed(true);
     } catch (error) {
-      Logger.error(error);
-      Toastr.error(Error("Something went wrong!"));
+      logger.error(error);
     }
   };
 
   const handleCategoryChange = clickedCategory => {
-    clickedCategory === currentCategory
-      ? setCurrentCategory("")
-      : setCurrentCategory(clickedCategory);
+    setCurrentCategory(
+      clickedCategory === currentCategory ? "" : clickedCategory
+    );
   };
 
   const countPublishedStatus = status =>
@@ -72,13 +74,13 @@ function SideBar({
 
   const toggleSearch = () => {
     setIsSearchBoxCollapsed(!isSearchBoxCollapsed);
-    !isTextBoxCollapsed && setIsTextBoxCollapsed(true);
-    !isSearchBoxCollapsed && setCategorySearch("");
+    setIsTextBoxCollapsed(true);
+    setCategorySearch("");
   };
 
   const toggleAddCategory = () => {
     setIsTextBoxCollapsed(!isTextBoxCollapsed);
-    !isSearchBoxCollapsed && setIsSearchBoxCollapsed(true);
+    setIsSearchBoxCollapsed(true);
   };
 
   useEffect(() => {

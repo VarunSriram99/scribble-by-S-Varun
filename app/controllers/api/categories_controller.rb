@@ -6,7 +6,7 @@
 
     def index
       categories = Category.all.order(:order)
-      render status: :ok, json: { "Categories": categories }
+      render status: :ok, json: { "categories": categories }
     end
 
     def create
@@ -30,7 +30,7 @@
     def reorder
       reorder = category_params["reorder"]
       if Category.update(reorder[:ids], reorder[:orders])
-        render status: :ok, json: { notice: t("successfully_reordered") }
+        render status: :ok, json: { message: t("successfully_reordered") }
       else
         error = category.errors.full_messages.to_sentence
         render status: :unprocessable_entity, json: { error: error }

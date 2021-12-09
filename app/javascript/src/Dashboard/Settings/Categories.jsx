@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import { Formik, Form } from "formik";
-import Logger from "js-logger";
 import { Reorder, Edit, Delete, Check } from "neetoicons";
-import { Typography, Button, Toastr, PageLoader } from "neetoui/v2";
+import { Typography, Button, PageLoader } from "neetoui/v2";
 import { Input } from "neetoui/v2/formik";
 
 import categoriesApi from "apis/categories";
@@ -12,11 +11,17 @@ import DeleteCategory from "./DeleteCategory";
 
 function Categories({ categoriesData, fetchCategories }) {
   const [categories, setCategories] = useState([]);
+
   const [currentlyDraggedCategory, setCurrentlyDraggedCategory] = useState(-1);
+
   const [isAddNewCategoryOpen, setIsAddNewCategoryOpen] = useState(false);
+
   const [currentlyEditedCategory, setCurrentlyEditedCategory] = useState(-1);
+
   const [currentlyDeletedCategory, setCurrentlyDeletedCategory] = useState(-1);
+
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
 
   const onDragStart = order => {
@@ -25,6 +30,7 @@ function Categories({ categoriesData, fetchCategories }) {
 
   const onDrop = async order => {
     const categoriesOrder = [...categories];
+
     try {
       setIsLoading(true);
       //draggedCategory is the category which is currently being dragged
@@ -43,21 +49,22 @@ function Categories({ categoriesData, fetchCategories }) {
 
       // Reordering the element in the array
       const removedElement = categoriesOrder.splice(draggedCategory, 1);
+
       categoriesOrder.splice(droppedOverCategory, 0, ...removedElement);
+
       const ids = [];
+
       const orders = [];
+
       categoriesOrder.map((categoryOrder, index) => {
         ids.push(categoryOrder.id);
         orders.push({ order: index + 1 });
       });
-      await categoriesApi.reorder({
-        category: { reorder: { ids: ids, orders: orders } },
-      });
+      await categoriesApi.reorder({ reorder: { ids: ids, orders: orders } });
       fetchCategories();
       setIsLoading(false);
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Error in reordering!"));
+      logger.log(error);
     }
   };
 
@@ -68,6 +75,7 @@ function Categories({ categoriesData, fetchCategories }) {
 
   const validateCategory = values => {
     const currentValue = values.name.trim();
+
     if (currentValue?.length === 0) {
       return { name: "Category shouldn't be empty." };
     } else if (
@@ -89,28 +97,17 @@ function Categories({ categoriesData, fetchCategories }) {
     setIsLoading(true);
     try {
       if (!values.isEdit) {
-        await categoriesApi.create({
-          category: { name: values.name.trim() },
-        });
-        Toastr.success("Successfully created new category!");
+        await categoriesApi.create({ name: values.name.trim() });
         setIsAddNewCategoryOpen(false);
       } else {
         await categoriesApi.update(currentlyEditedCategory, {
-          category: { name: values.name.trim() },
+          name: values.name.trim(),
         });
-        Toastr.success("Successfully edited category!");
         setCurrentlyEditedCategory(-1);
       }
       fetchCategories();
     } catch (error) {
-      Logger.error(error);
-      Toastr.error(
-        Error(
-          values.isEdit
-            ? "Error in creating new category!"
-            : "Error in editing category!"
-        )
-      );
+      logger.error(error);
     } finally {
       setIsLoading(false);
     }

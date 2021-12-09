@@ -14,7 +14,7 @@ class SiteSettingTest < ActiveSupport::TestCase
   def test_name_should_not_be_blank
     @site_setting.name = nil
     assert_not @site_setting.valid?
-    assert_equal @site_setting.errors.full_messages, ["Name can't be blank"]
+    assert_includes @site_setting.errors.full_messages, "Name can't be blank"
   end
 
   def test_auth_token_should_be_present

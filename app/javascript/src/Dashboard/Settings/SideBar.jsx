@@ -10,6 +10,7 @@ function SideBar({ currentSetting, setCurrentSetting }) {
 
   const settingStyle =
     "flex items-center space-x-2 p-4 rounded-sm pointer-events-none delay-150";
+
   return (
     <div className="border-r w-4/12 h-screen">
       <div

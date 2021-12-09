@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { Toastr } from "neetoui/v2";
-
 import articlesApi from "apis/articles";
 
 import DeleteArticle from "./DeleteArticle";
@@ -11,19 +9,25 @@ import TableView from "./TableView";
 
 function Articles() {
   const [selectedColumns, setSelectedColumns] = useState([]);
+
   const [currentCategory, setCurrentCategory] = useState("");
+
   const [currentStatus, setCurrentStatus] = useState("All");
+
   const [articleData, setArticleData] = useState([]);
+
   const [articleSearch, setArticleSearch] = useState("");
+
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
   const [currentlyDeletedArticle, setCurrentlyDeletedArticle] = useState(-1);
 
   const fetchArticlesData = async () => {
     try {
       const { data } = await articlesApi.fetchArticles();
       setArticleData(data.articles);
-    } catch {
-      Toastr.error(Error("Error in fetching articles."));
+    } catch (error) {
+      logger.log(error);
     }
   };
 

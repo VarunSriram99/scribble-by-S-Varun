@@ -12,7 +12,7 @@ class Api::CategoriesControllerTest < ActionDispatch::IntegrationTest
     get api_categories_path, headers: @category_headers
     assert_response :success
     response_body = response.parsed_body
-    all_categories = response_body["Categories"]
+    all_categories = response_body["categories"]
     assert_equal all_categories.length, Category.count
   end
 
@@ -53,7 +53,7 @@ class Api::CategoriesControllerTest < ActionDispatch::IntegrationTest
       params: { category: { reorder: { ids: [1, 2], orders: [{ order: 2 }, { order: 1 }] } } }
     assert_response :success
     response_json = response.parsed_body
-    assert_equal response_json["notice"], t("successfully_reordered")
+    assert_equal response_json["message"], t("successfully_reordered")
     @category.reload
     category2.reload
     assert_equal @category.order, 2

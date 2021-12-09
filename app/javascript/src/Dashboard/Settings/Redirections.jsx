@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import { Form, Formik } from "formik";
-import Logger from "js-logger";
 import { Edit, Delete, Check } from "neetoicons";
-import { Typography, Button, Toastr, PageLoader } from "neetoui/v2";
+import { Typography, Button, PageLoader } from "neetoui/v2";
 import { Input } from "neetoui/v2/formik";
 
 import redirectionsApi from "apis/redirections";
@@ -12,12 +11,17 @@ import DeleteRedirection from "./DeleteRedirection";
 
 function Redirections() {
   const [redirectionsData, setRedirectionsData] = useState([]);
+
   const [isNewRedirectionOpen, setIsNewRedirectionOpen] = useState(false);
+
   const [currentlyEditedRedirection, setCurrentlyEditedRedirection] =
     useState(-1);
+
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
   const [currentlyDeletedRedirection, setCurrentlyDeletedRedirection] =
     useState(-1);
+
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchRedirections = async () => {
@@ -26,8 +30,7 @@ function Redirections() {
       const { data } = await redirectionsApi.fetchRedirectionsData();
       setRedirectionsData(data.Redirections);
     } catch (error) {
-      Toastr.error(Error("Error in fetching Redirections data"));
-      Logger.log(error);
+      logger.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -85,33 +88,30 @@ function Redirections() {
     setCurrentlyDeletedRedirection(id);
     setIsDeleteAlertOpen(true);
   };
-  const handleCreateOrEdit = async values => {
+
+  const handleEdit = async (fromPath, toPath) => {
+    await redirectionsApi.update(currentlyEditedRedirection, {
+      from: fromPath,
+      to: toPath,
+    });
+    setCurrentlyEditedRedirection(-1);
+  };
+
+  const handleCreate = async (fromPath, toPath) => {
+    await redirectionsApi.create({ from: fromPath, to: toPath });
+    setIsNewRedirectionOpen(false);
+  };
+
+  const handleRedirectionSubmission = values => {
     const fromPath = `/${values.from.trim()}`;
     const toPath = `/${values.to.trim()}`;
     try {
-      if (values.isEdit) {
-        await redirectionsApi.update(currentlyEditedRedirection, {
-          redirection: { from: fromPath, to: toPath },
-        });
-        Toastr.success("Successfully edited redirection!");
-        setCurrentlyEditedRedirection(-1);
-      } else {
-        await redirectionsApi.create({
-          redirection: { from: fromPath, to: toPath },
-        });
-        Toastr.success("Successfully created redirection!");
-        setIsNewRedirectionOpen(false);
-      }
+      if (values.isEdit) handleEdit(fromPath, toPath);
+      else handleCreate(fromPath, toPath);
+
       fetchRedirections();
     } catch (error) {
-      Toastr.error(
-        Error(
-          values.isEdit
-            ? "Error in editing redirection"
-            : "Error in creating redirection"
-        )
-      );
-      Logger.log(error);
+      logger.log(error);
     }
   };
 
@@ -155,7 +155,7 @@ function Redirections() {
                     isEdit: true,
                   }}
                   validate={validateRedirection}
-                  onSubmit={handleCreateOrEdit}
+                  onSubmit={handleRedirectionSubmission}
                 >
                   {({ setFieldValue }) => (
                     <Form className="flex justify-between items-center">
@@ -217,7 +217,7 @@ function Redirections() {
               <Formik
                 initialValues={{ from: "", to: "", isEdit: false }}
                 validate={validateRedirection}
-                onSubmit={handleCreateOrEdit}
+                onSubmit={handleRedirectionSubmission}
               >
                 {({ setFieldValue }) => (
                   <Form className="flex items-center w-full justify-between">

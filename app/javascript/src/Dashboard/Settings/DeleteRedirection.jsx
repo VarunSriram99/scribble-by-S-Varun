@@ -1,7 +1,6 @@
 import React from "react";
 
-import Logger from "js-logger";
-import { Alert, Toastr } from "neetoui/v2";
+import { Alert } from "neetoui/v2";
 
 import redirectionsApi from "apis/redirections";
 
@@ -15,13 +14,12 @@ function DeleteRedirection({
     try {
       await redirectionsApi.destroy(currentlyDeletedRedirection);
       fetchRedirections();
-      Toastr.success("Successfully deleted redirection!");
       setIsDeleteAlertOpen(false);
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Error in deleting the redirection!"));
+      logger.log(error);
     }
   };
+
   return (
     <Alert
       title="Delete Redirection"
