@@ -16,13 +16,9 @@ function SideBar({
   articleData,
 }) {
   const [isTextBoxCollapsed, setIsTextBoxCollapsed] = useState(true);
-
   const [isSearchBoxCollapsed, setIsSearchBoxCollapsed] = useState(true);
-
   const [categories, setCategories] = useState([]);
-
   const [categorySearch, setCategorySearch] = useState("");
-
   const publishedStatuses = ["All", "Draft", "Published"];
 
   const fetchCategories = async () => {

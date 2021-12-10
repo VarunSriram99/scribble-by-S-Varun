@@ -11,24 +11,19 @@ import DeleteRedirection from "./DeleteRedirection";
 
 function Redirections() {
   const [redirectionsData, setRedirectionsData] = useState([]);
-
   const [isNewRedirectionOpen, setIsNewRedirectionOpen] = useState(false);
-
   const [currentlyEditedRedirection, setCurrentlyEditedRedirection] =
     useState(-1);
-
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-
   const [currentlyDeletedRedirection, setCurrentlyDeletedRedirection] =
     useState(-1);
-
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchRedirections = async () => {
     setIsLoading(true);
     try {
       const { data } = await redirectionsApi.fetchRedirectionsData();
-      setRedirectionsData(data.Redirections);
+      setRedirectionsData(data.redirections);
     } catch (error) {
       logger.log(error);
     } finally {
@@ -89,21 +84,18 @@ function Redirections() {
     setIsDeleteAlertOpen(true);
   };
 
-  const handleEdit = async (fromPath, toPath) => {
+  const handleEdit = async payload => {
     try {
-      await redirectionsApi.update(currentlyEditedRedirection, {
-        from: fromPath,
-        to: toPath,
-      });
+      await redirectionsApi.update(currentlyEditedRedirection, payload);
       setCurrentlyEditedRedirection(-1);
     } catch (error) {
       logger.log(error);
     }
   };
 
-  const handleCreate = async (fromPath, toPath) => {
+  const handleCreate = async payload => {
     try {
-      await redirectionsApi.create({ from: fromPath, to: toPath });
+      await redirectionsApi.create(payload);
       setIsNewRedirectionOpen(false);
     } catch (error) {
       logger.log(error);
@@ -113,9 +105,10 @@ function Redirections() {
   const handleRedirectionSubmission = values => {
     const fromPath = `/${values.from.trim()}`;
     const toPath = `/${values.to.trim()}`;
+    const payload = { from: fromPath, to: toPath };
 
-    if (values.isEdit) handleEdit(fromPath, toPath);
-    else handleCreate(fromPath, toPath);
+    if (values.isEdit) handleEdit(payload);
+    else handleCreate(payload);
 
     fetchRedirections();
   };

@@ -12,13 +12,10 @@ import categoriesApi from "apis/categories";
 
 function CreateOrEditArticle({ isEdit }) {
   const [isPublishOpen, setIsPublishOpen] = useState(false);
-
   const [categories, setCategories] = useState([]);
-
-  const { id } = useParams();
-
   const [initialValues, setInitialValues] = useState({});
 
+  const { id } = useParams();
   const history = useHistory();
 
   const fetchArticle = async () => {

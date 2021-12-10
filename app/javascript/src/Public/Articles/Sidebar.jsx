@@ -8,14 +8,12 @@ function Sidebar({ categoriesData }) {
 
   const addCategoryToExpandedCategories = key => {
     const currentlyExpandedCategories = [...expandedCategories];
-
     currentlyExpandedCategories.push(key);
     setExpandedCategories(currentlyExpandedCategories);
   };
 
   const removeCategoryFromExpandedCategories = key => {
     const currentlyExpandedCategories = [...expandedCategories];
-
     currentlyExpandedCategories.splice(
       currentlyExpandedCategories.indexOf(key),
       1

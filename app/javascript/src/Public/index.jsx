@@ -16,11 +16,8 @@ import CenteredPageLoader from "../common/CenteredPageLoader";
 
 function Public() {
   const [siteName, setSiteName] = useState("");
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [redirections, setRedirections] = useState([]);
 
   const cookies = new Cookie();
@@ -53,7 +50,7 @@ function Public() {
   const fetchRedirections = async () => {
     try {
       const { data } = await redirectionsApi.fetchRedirectionsData();
-      setRedirections(data.Redirections);
+      setRedirections(data.redirections);
     } catch (error) {
       logger.log(error);
     }

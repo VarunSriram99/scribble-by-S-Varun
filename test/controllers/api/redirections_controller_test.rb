@@ -12,7 +12,7 @@ class Api::RedirectionsControllerTest < ActionDispatch::IntegrationTest
     get api_redirections_path, headers: @redirection_headers
     assert_response :success
     response_body = response.parsed_body
-    all_redirections = response_body["Redirections"]
+    all_redirections = response_body["redirections"]
     assert_equal all_redirections.length, Redirection.count
   end
 

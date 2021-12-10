@@ -9,17 +9,11 @@ import TableView from "./TableView";
 
 function Articles() {
   const [selectedColumns, setSelectedColumns] = useState([]);
-
   const [currentCategory, setCurrentCategory] = useState("");
-
   const [currentStatus, setCurrentStatus] = useState("All");
-
   const [articleData, setArticleData] = useState([]);
-
   const [articleSearch, setArticleSearch] = useState("");
-
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-
   const [currentlyDeletedArticle, setCurrentlyDeletedArticle] = useState(-1);
 
   const fetchArticlesData = async () => {

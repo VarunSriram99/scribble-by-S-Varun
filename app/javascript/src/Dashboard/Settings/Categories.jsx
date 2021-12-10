@@ -11,17 +11,11 @@ import DeleteCategory from "./DeleteCategory";
 
 function Categories({ categoriesData, fetchCategories }) {
   const [categories, setCategories] = useState([]);
-
   const [currentlyDraggedCategory, setCurrentlyDraggedCategory] = useState(-1);
-
   const [isAddNewCategoryOpen, setIsAddNewCategoryOpen] = useState(false);
-
   const [currentlyEditedCategory, setCurrentlyEditedCategory] = useState(-1);
-
   const [currentlyDeletedCategory, setCurrentlyDeletedCategory] = useState(-1);
-
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-
   const [isLoading, setIsLoading] = useState(true);
 
   const onDragStart = order => {
@@ -49,11 +43,9 @@ function Categories({ categoriesData, fetchCategories }) {
 
       // Reordering the element in the array
       const removedElement = categoriesOrder.splice(draggedCategory, 1);
-
       categoriesOrder.splice(droppedOverCategory, 0, ...removedElement);
 
       const ids = [];
-
       const orders = [];
 
       categoriesOrder.map((categoryOrder, index) => {

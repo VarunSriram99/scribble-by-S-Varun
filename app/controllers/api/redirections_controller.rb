@@ -6,7 +6,7 @@
 
     def index
       redirections = Redirection.all
-      render status: :ok, json: { "Redirections": redirections }
+      render status: :ok, json: { redirections: redirections }
     end
 
     def create

@@ -15,7 +15,6 @@ function Subheader({
   const handleColumnChange = event => {
     //Only unchecked columns are added into the selectedColumns array state to set them as hidden in react table
     const changeSelectedColumns = selectedColumns;
-
     if (event.target.checked) {
       const elementToBeRemoved = changeSelectedColumns.indexOf(
         event.target.name

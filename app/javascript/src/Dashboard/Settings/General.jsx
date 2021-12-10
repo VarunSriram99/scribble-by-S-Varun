@@ -12,20 +12,18 @@ import sitesettingsApi from "apis/sitesettings";
 
 function General() {
   const [hasPassword, setHasPassword] = useState(false);
-
   const [passwordErrors, setPasswordErrors] = useState(["length", "character"]);
-
   const [siteName, setSiteName] = useState("");
-
   const initialValues = hasPassword
     ? { name: siteName, password: "" }
     : { name: siteName };
 
   const handleSubmit = async values => {
+    const payload = hasPassword
+      ? values
+      : { name: values.name, password: null };
     try {
-      hasPassword
-        ? await sitesettingsApi.update(values)
-        : await sitesettingsApi.update({ name: values.name, password: null });
+      await sitesettingsApi.update(payload);
     } catch (error) {
       logger.log(error);
     }

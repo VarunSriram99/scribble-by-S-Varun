@@ -8,11 +8,8 @@ import publicApi from "apis/public";
 
 function FullArticle() {
   const { slug } = useParams();
-
   const [article, setArticle] = useState({});
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [isError, setIsError] = useState(false);
 
   const fetchArticle = async () => {

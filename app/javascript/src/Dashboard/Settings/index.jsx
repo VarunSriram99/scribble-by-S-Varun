@@ -9,7 +9,6 @@ import SideBar from "./SideBar";
 
 function SettingsPage() {
   const [currentSetting, setCurrentSetting] = useState("general");
-
   const [categoriesData, setCategoriesData] = useState([]);
 
   const fetchCategories = async () => {

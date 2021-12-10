@@ -6,7 +6,7 @@
 
     def index
       categories = Category.all.order(:order)
-      render status: :ok, json: { "categories": categories }
+      render status: :ok, json: { categories: categories }
     end
 
     def create
