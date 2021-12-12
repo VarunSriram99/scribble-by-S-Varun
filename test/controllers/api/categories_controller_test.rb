@@ -48,7 +48,7 @@ class Api::CategoriesControllerTest < ActionDispatch::IntegrationTest
 
   def test_should_reorder_categories
     category2 = create(:category)
-    post api_categories_reorder_path,
+    post reorder_api_categories_path,
       headers: @category_headers,
       params: { category: { reorder: { ids: [1, 2], orders: [{ order: 2 }, { order: 1 }] } } }
     assert_response :success
@@ -82,5 +82,13 @@ class Api::CategoriesControllerTest < ActionDispatch::IntegrationTest
       params: { "category": { name: nil } }
     assert_response :unprocessable_entity
     assert_nil response.parsed_body["notice"]
+  end
+
+  def test_should_not_delete_or_update_with_invalid_id
+    put api_category_path(100),
+      headers: @category_headers,
+      params: { "category": { name: nil } }
+    assert_response :not_found
+    assert_equal response.parsed_body["error"], t("not_found", entity: "Category")
   end
 end

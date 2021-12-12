@@ -53,7 +53,7 @@
       end
 
       def load_category
-        @category = Category.find(params[:id])
+        @category = Category.find_by(id: params[:id])
         unless @category
           render status: :not_found, json: { error: t("not_found", entity: "Category") }
         end

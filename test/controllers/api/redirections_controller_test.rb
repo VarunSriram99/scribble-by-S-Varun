@@ -54,4 +54,21 @@ class Api::RedirectionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_nil response.parsed_body["notice"]
   end
+
+  def test_should_not_delete_or_update_for_invalid_id
+    delete api_redirection_path(10),
+      headers: @redirection_headers
+    assert_response :not_found
+    response_json = response.parsed_body
+    assert_equal response_json["error"], t("not_found", entity: "Redirection")
+  end
+
+  def test_should_not_create_with_invalid_data
+    post api_redirections_path,
+      headers: @redirection_headers,
+      params: { redirection: { from: "/", to: "/" } }
+    assert_response :unprocessable_entity
+    response_json = response.parsed_body
+    assert_equal response_json["error"], "To To URL can't be same as from URL"
+  end
 end

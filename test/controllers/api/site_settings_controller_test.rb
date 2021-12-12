@@ -27,4 +27,13 @@ class Api::SiteSettingsControllerTest < ActionDispatch::IntegrationTest
     @site_settings.reload
     assert_equal @site_settings.name, "hello"
   end
+
+  def test_should_not_update_with_erroneous_site_settings
+    put api_site_setting_path(1),
+      headers: @redirection_headers,
+      params: { site_settings: { name: "" } }
+    assert_response :unprocessable_entity
+    response_json = response.parsed_body
+    assert_equal response_json["error"], "Name can't be blank"
+  end
 end
