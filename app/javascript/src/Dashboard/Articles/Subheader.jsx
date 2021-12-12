@@ -25,6 +25,7 @@ function Subheader({
     }
     setSelectedColumns([...changeSelectedColumns]);
   };
+
   return (
     <div className="flex justify-end space-x-2 items-center m-4">
       <div className="w-1/3">

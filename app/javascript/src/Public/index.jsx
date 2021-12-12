@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import Logger from "js-logger";
-import { Toastr } from "neetoui/v2";
 import { Redirect, Switch } from "react-router-dom";
 import Cookie from "universal-cookie";
 
@@ -21,6 +19,7 @@ function Public() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [redirections, setRedirections] = useState([]);
+
   const cookies = new Cookie();
 
   const fetchSiteDetails = async () => {
@@ -38,8 +37,7 @@ function Public() {
       }
       setIsLoading(false);
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Error in loading site details"));
+      logger.log(error);
     }
   };
 
@@ -52,9 +50,9 @@ function Public() {
   const fetchRedirections = async () => {
     try {
       const { data } = await redirectionsApi.fetchRedirectionsData();
-      setRedirections(data.Redirections);
-    } catch {
-      Toastr.error(Error("Error in fetching redirections!"));
+      setRedirections(data.redirections);
+    } catch (error) {
+      logger.log(error);
     }
   };
 

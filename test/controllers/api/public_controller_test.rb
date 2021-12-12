@@ -33,4 +33,12 @@ class Api::PublicControllerTest < ActionDispatch::IntegrationTest
       headers: { "X-Auth-Token": @site_setting.authentication_token }
     assert_response :not_found
   end
+
+  def test_should_not_authenticate_without_valid_auth_token
+    get api_public_path(@article.slug),
+      headers: { "X-Auth-Token": nil }
+    assert_response :unauthorized
+    response_body = response.parsed_body["error"]
+    assert_equal response_body, t("session.could_not_authenticate")
+  end
 end

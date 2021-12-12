@@ -17,7 +17,9 @@ function TableView({
     setCurrentlyDeletedArticle(id);
     setIsDeleteAlertOpen(true);
   };
+
   const [data, setData] = useState([]);
+
   const columns = useMemo(
     () => [
       {
@@ -72,6 +74,7 @@ function TableView({
     ],
     []
   );
+
   useEffect(() => {
     const filteredData = articleData
       .filter(article =>

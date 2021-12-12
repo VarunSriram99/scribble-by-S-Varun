@@ -5,7 +5,7 @@
 
     def index
       site_setting = SiteSetting.first
-      render status: :ok, json: { "site_name": site_setting.name, "has_password": !site_setting.password_digest.nil? }
+      render status: :ok, json: { site_name: site_setting.name, has_password: !site_setting.password_digest.nil? }
     end
 
     def update

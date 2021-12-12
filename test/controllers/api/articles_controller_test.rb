@@ -70,4 +70,30 @@ class Api::ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_nil = response.parsed_body["notice"]
   end
+
+  def test_should_not_load_article_for_invalid_article_id
+    put api_article_path(10),
+      headers: @article_headers,
+      params: { "article": { title: "hello", body: "hai", category_id: @article.category_id } }
+    assert_response :not_found
+  end
+
+  def test_slug_should_be_generated_if_publish_is_true
+    put api_article_path(@article),
+      headers: @article_headers,
+      params: { "article": { title: "hello", body: "hai", category_id: @article.category_id, publish: true } }
+    assert_response :success
+    @article.reload
+    assert_equal @article.slug, "hello"
+    assert_not_nil @article.published_date
+  end
+
+  def test_slug_should_be_nil_if_publish_is_false
+    put api_article_path(@article),
+      headers: @article_headers,
+      params: { "article": { title: "hello", body: "hai", category_id: @article.category_id, publish: nil } }
+    assert_response :success
+    @article.reload
+    assert_nil @article.slug
+  end
 end

@@ -7,26 +7,22 @@ class ArticleTest < ActiveSupport::TestCase
     @article = build(:article)
   end
 
-  def test_valid_article_will_be_accepted
-    assert @article.save!
-  end
-
   def test_article_title_should_only_have_255_characters
     @article.title = "a" * 256
     assert_not @article.valid?
-    assert_equal @article.errors.full_messages, ["Title is too long (maximum is 255 characters)"]
+    assert_includes @article.errors.full_messages, "Title is too long (maximum is 255 characters)"
   end
 
   def test_article_title_should_not_be_blank
     @article.title = nil
     assert_not @article.valid?
-    assert_equal @article.errors.full_messages, ["Title can't be blank"]
+    assert_includes @article.errors.full_messages, "Title can't be blank"
   end
 
   def test_article_body_should_not_be_blank
     @article.body = nil
     assert_not @article.valid?
-    assert_equal @article.errors.full_messages, ["Body can't be blank"]
+    assert_includes @article.errors.full_messages, "Body can't be blank"
   end
 
   def test_slug_should_be_unique
@@ -42,6 +38,6 @@ class ArticleTest < ActiveSupport::TestCase
     @article.create_slug
     @article.save
     assert_not article2.update(slug: @article.slug)
-    assert_equal article2.errors.full_messages, ["Slug has already been taken"]
+    assert_includes article2.errors.full_messages, "Slug has already been taken"
   end
 end

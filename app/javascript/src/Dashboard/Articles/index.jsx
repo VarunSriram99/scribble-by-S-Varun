@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { Toastr } from "neetoui/v2";
-
 import articlesApi from "apis/articles";
 
 import DeleteArticle from "./DeleteArticle";
@@ -22,8 +20,8 @@ function Articles() {
     try {
       const { data } = await articlesApi.fetchArticles();
       setArticleData(data.articles);
-    } catch {
-      Toastr.error(Error("Error in fetching articles."));
+    } catch (error) {
+      logger.log(error);
     }
   };
 

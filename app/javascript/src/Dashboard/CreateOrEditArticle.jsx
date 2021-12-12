@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import { Formik, Form } from "formik";
-import Logger from "js-logger";
 import { Down } from "neetoicons";
-import { Toastr, Button } from "neetoui/v2";
+import { Button } from "neetoui/v2";
 import { Input, Select, Textarea } from "neetoui/v2/formik";
 import { useParams, useHistory } from "react-router-dom";
 import * as yup from "yup";
@@ -14,8 +13,9 @@ import categoriesApi from "apis/categories";
 function CreateOrEditArticle({ isEdit }) {
   const [isPublishOpen, setIsPublishOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const { id } = useParams();
   const [initialValues, setInitialValues] = useState({});
+
+  const { id } = useParams();
   const history = useHistory();
 
   const fetchArticle = async () => {
@@ -37,8 +37,7 @@ function CreateOrEditArticle({ isEdit }) {
             publish: false,
           });
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Error in fetching article."));
+      logger.log(error);
     }
   };
 
@@ -50,23 +49,20 @@ function CreateOrEditArticle({ isEdit }) {
 
   const handleSubmit = async values => {
     if (!values.category.value) return false;
+
     try {
       const payload = {
-        article: {
-          title: values.title,
-          category_id: values.category.value,
-          body: values.body,
-          publish: values.publish,
-        },
+        title: values.title,
+        category_id: values.category.value,
+        body: values.body,
+        publish: values.publish,
       };
       isEdit
         ? await articlesApi.update(id, payload)
         : await articlesApi.create(payload);
-      Toastr.success("Successfully created article");
       history.push("/");
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Error in creating article"));
+      logger.log(error);
     }
     return true;
   };
@@ -75,11 +71,9 @@ function CreateOrEditArticle({ isEdit }) {
     try {
       const { data } = await categoriesApi.fetchCategories();
 
-      //To sort the categories based on order
-      setCategories(data.Categories);
+      setCategories(data.categories);
     } catch (error) {
-      Logger.log(error);
-      Toastr.error("Error in fetching Category data");
+      logger.log(error);
     }
   };
 

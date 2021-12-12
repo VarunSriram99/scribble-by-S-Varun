@@ -5,6 +5,7 @@ import { Route, Switch, BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { registerIntercepts } from "apis/axios";
 import { initializeLogger } from "common/logger";
 
 import Dashboard from "./Dashboard";
@@ -15,6 +16,7 @@ function App() {
 
   useEffect(() => {
     initializeLogger();
+    registerIntercepts();
     setIsLoading(false);
   }, []);
 

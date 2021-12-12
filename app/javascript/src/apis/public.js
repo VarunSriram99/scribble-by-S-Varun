@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const fetchPublic = () => axios.get("/api/public");
+const fetchCategoriesWithArticles = () => axios.get("/api/public");
 const show = slug => axios.get(`/api/public/${slug}`);
 
-const publicApi = { fetchPublic, show };
+const publicApi = { fetchCategoriesWithArticles, show };
 
 export default publicApi;

@@ -1,7 +1,6 @@
 import React from "react";
 
-import Logger from "js-logger";
-import { Alert, Toastr } from "neetoui/v2";
+import { Alert } from "neetoui/v2";
 
 import articlesApi from "apis/articles";
 
@@ -15,13 +14,12 @@ function DeleteArticle({
     try {
       await articlesApi.destroy(currentlyDeletedArticle);
       fetchArticles();
-      Toastr.success("Successfully deleted article!");
       setIsDeleteAlertOpen(false);
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Error in deleting the article!"));
+      logger.log(error);
     }
   };
+
   return (
     <Alert
       title="Delete Article"

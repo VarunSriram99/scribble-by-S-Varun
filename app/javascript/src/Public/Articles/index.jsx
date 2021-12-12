@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import Logger from "js-logger";
-import { Toastr, Typography } from "neetoui/v2";
+import { Typography } from "neetoui/v2";
 import { Route } from "react-router-dom";
 
 import publicApi from "apis/public";
@@ -14,11 +13,10 @@ function Articles({ siteName }) {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await publicApi.fetchPublic();
+      const { data } = await publicApi.fetchCategoriesWithArticles();
       setCategoriesData(data.categories);
     } catch (error) {
-      Logger.log(error);
-      Toastr.error(Error("Error in fetching public data!"));
+      logger.log(error);
     }
   };
 
